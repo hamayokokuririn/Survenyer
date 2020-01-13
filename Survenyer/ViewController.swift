@@ -10,35 +10,49 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    private let speechContoller = SpeechController()
+    private var speechContoller: SpeechController? = SpeechController()
     
     let viewModelA = SurveyInputTextFiledViewModel()
     
     lazy var inputA: SurveyInputTextFiled = {
         return SurveyInputTextFiled(labelText: "A", viewModel: self.viewModelA)
     }()
-
+    
+    let viewModelB = SurveyInputTextFiledViewModel()
+    
+    lazy var inputB: SurveyInputTextFiled = {
+        return SurveyInputTextFiled(labelText: "B", viewModel: self.viewModelA)
+    }()
+    
+    var focusedTextFiled: SurveyInputTextFiled?
+    
     override func loadView() {
         super.loadView()
         
+        self.focusedTextFiled = inputA
+        
         viewModelA.handler = {
-            self.speechContoller.chnageControl()
+            self.speechContoller?.chnageControl()
         }
         
-        speechContoller.delegate = self
+        viewModelB.handler = {
+            self.speechContoller?.chnageControl()
+        }
+        
+        speechContoller?.delegate = self
         
         view.addSubview(inputA)
+        view.addSubview(inputB)
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-    }
-
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
+        let margin = CGFloat(32)
         
         inputA.frame = CGRect(x: 20, y: 100, width: 300, height: 50)
+        let inputABottom = inputA.frame.maxY
+        
+        inputB.frame = CGRect(x: inputA.frame.minX, y: inputABottom + margin, width: 300, height: 50)
     }
     
 }
@@ -46,6 +60,18 @@ class ViewController: UIViewController {
 extension ViewController: SpeechControllerDelegate {
     func update(_ controller: SpeechController, didUpdate text: String) {
         print(text)
+        focusedTextFiled?.updateText(text)
+        
+        if let lastChar = text.last,
+            lastChar == "," {
+            print("カンマ")
+            
+            speechContoller = SpeechController()
+            speechContoller?.delegate = self
+            
+            inputB.becomeFirstResponderTextFiled()
+            focusedTextFiled = inputB
+        }
     }
 }
 

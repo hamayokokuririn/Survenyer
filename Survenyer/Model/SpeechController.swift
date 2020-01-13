@@ -83,7 +83,7 @@ final class SpeechController {
         recognitionRequest.shouldReportPartialResults = true
         
         recognitionTask = speechRecognizer.recognitionTask(with: recognitionRequest) { [weak self] result, error in
-            guard let `self` = self else { return }
+            guard let self = self else { return }
             
             var isFinal = false
             
@@ -101,7 +101,7 @@ final class SpeechController {
                 self.recognitionRequest = nil
                 self.recognitionTask = nil
                 
-                print("音声認識スタート")
+                print("音声認識ストップ")
             }
         }
         

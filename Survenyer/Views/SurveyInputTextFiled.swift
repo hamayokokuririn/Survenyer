@@ -46,6 +46,14 @@ final class SurveyInputTextFiled: UIView {
         textFiled.frame.size = CGSize(width: frame.width - x, height: label.frame.size.height)
         textFiled.frame.origin.x = x
     }
+    
+    func becomeFirstResponderTextFiled() {
+        textFiled.becomeFirstResponder()
+    }
+    
+    func updateText(_ text: String) {
+        textFiled.text = text
+    }
 }
 
 
