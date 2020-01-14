@@ -10,7 +10,10 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    private var speechContoller: SpeechController? = SpeechController()
+    private let speechActiveLabel = UILabel()
+    private let finishButton = UIButton()
+    
+    private var speechContoller = SpeechController()
     
     let viewModelA = SurveyInputTextFiledViewModel()
     
@@ -35,25 +38,43 @@ class ViewController: UIViewController {
     override func loadView() {
         super.loadView()
         
+        speechActiveLabel.text = "音声を認識していません"
+        speechActiveLabel.numberOfLines = 0
+        view.addSubview(speechActiveLabel)
+        
+        finishButton.setTitle("音声認識を止める", for: .normal)
+        finishButton.addTarget(self, action: #selector(didPushFinishButton), for: .touchUpInside)
+        finishButton.backgroundColor = .red
+        view.addSubview(finishButton)
+        
         viewModelA.handler = {
-            self.speechContoller?.chnageControl()
+            self.speechContoller.chnageControl()
+            self.speechActiveLabel.text = "音声を認識しています\nスラッシュで次に移ります"
+            self.view.setNeedsLayout()
+            self.view.layoutIfNeeded()
         }
         
         viewModelB.handler = {
-            self.speechContoller?.chnageControl()
+            self.speechContoller.chnageControl()
+            self.speechActiveLabel.text = "音声を認識しています\nスラッシュで次に移ります"
         }
         
         viewModelC.handler = {
-            self.speechContoller?.chnageControl()
+            self.speechContoller.chnageControl()
+            self.speechActiveLabel.text = "音声を認識しています\nスラッシュで次に移ります"
         }
         
-        speechContoller?.delegate = self
+        speechContoller.delegate = self
         
         view.addSubview(inputA)
         view.addSubview(inputB)
         view.addSubview(inputC)
         
         inputTextFiledList = InputTextFieldList(list: [inputA, inputB, inputC], focusedInputTextField: inputA)
+    }
+    
+    @objc private func didPushFinishButton() {
+        speechContoller.chnageControl()
     }
     
     override func viewWillLayoutSubviews() {
@@ -66,25 +87,32 @@ class ViewController: UIViewController {
         inputB.frame = CGRect(x: inputA.frame.minX, y: inputABottom + margin, width: 300, height: 50)
         
         inputC.frame = CGRect(x: inputA.frame.minX, y: inputB.frame.maxY + margin, width: 300, height: 50)
+        
+        speechActiveLabel.sizeToFit()
+        speechActiveLabel.frame.origin.x = inputA.frame.minX
+        speechActiveLabel.frame.origin.y = inputC.frame.maxY + margin
+        
+        finishButton.frame = CGRect(x: inputA.frame.minX, y: speechActiveLabel.frame.maxY,
+                                    width: 300, height: 50)
     }
     
 }
 
 extension ViewController: SpeechControllerDelegate {
     func update(_ controller: SpeechController, didUpdate text: String) {
-        print(text)
-        inputTextFiledList?.focusedInputTextField.updateText(text)
         
         if let lastChar = text.last,
             lastChar == "/" {
             print("スラッシュ")
             
             speechContoller = SpeechController()
-            speechContoller?.delegate = self
+            speechContoller.delegate = self
             
             inputTextFiledList?.next()
             inputTextFiledList?.focusedInputTextField.becomeFirstResponderTextFiled()
             
+        } else {
+            inputTextFiledList?.focusedInputTextField.updateText(text)
         }
     }
 }

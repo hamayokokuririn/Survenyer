@@ -23,7 +23,7 @@ final class SurveyInputTextFiled: UIView {
         
         label.text = labelText
         label.font = UIFont.preferredFont(forTextStyle: .largeTitle)
-        label.backgroundColor = .gray
+        
         addSubview(label)
         
         textFiled.delegate = viewModel
