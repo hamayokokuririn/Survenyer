@@ -114,7 +114,7 @@ final class SpeechController {
         try startAudioEngine()
     }
     
-    private func refreshTask() {
+    func refreshTask() {
         if let recognitionTask = recognitionTask {
             recognitionTask.cancel()
             self.recognitionTask = nil

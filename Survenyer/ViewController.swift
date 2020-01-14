@@ -21,15 +21,19 @@ class ViewController: UIViewController {
     let viewModelB = SurveyInputTextFiledViewModel()
     
     lazy var inputB: SurveyInputTextFiled = {
-        return SurveyInputTextFiled(labelText: "B", viewModel: self.viewModelA)
+        return SurveyInputTextFiled(labelText: "B", viewModel: self.viewModelB)
     }()
     
-    var focusedTextFiled: SurveyInputTextFiled?
+    let viewModelC = SurveyInputTextFiledViewModel()
+    
+    lazy var inputC: SurveyInputTextFiled = {
+        return SurveyInputTextFiled(labelText: "C", viewModel: self.viewModelC)
+    }()
+    
+    var inputTextFiledList: InputTextFieldList?
     
     override func loadView() {
         super.loadView()
-        
-        self.focusedTextFiled = inputA
         
         viewModelA.handler = {
             self.speechContoller?.chnageControl()
@@ -39,10 +43,17 @@ class ViewController: UIViewController {
             self.speechContoller?.chnageControl()
         }
         
+        viewModelC.handler = {
+            self.speechContoller?.chnageControl()
+        }
+        
         speechContoller?.delegate = self
         
         view.addSubview(inputA)
         view.addSubview(inputB)
+        view.addSubview(inputC)
+        
+        inputTextFiledList = InputTextFieldList(list: [inputA, inputB, inputC], focusedInputTextField: inputA)
     }
     
     override func viewWillLayoutSubviews() {
@@ -53,6 +64,8 @@ class ViewController: UIViewController {
         let inputABottom = inputA.frame.maxY
         
         inputB.frame = CGRect(x: inputA.frame.minX, y: inputABottom + margin, width: 300, height: 50)
+        
+        inputC.frame = CGRect(x: inputA.frame.minX, y: inputB.frame.maxY + margin, width: 300, height: 50)
     }
     
 }
@@ -60,17 +73,18 @@ class ViewController: UIViewController {
 extension ViewController: SpeechControllerDelegate {
     func update(_ controller: SpeechController, didUpdate text: String) {
         print(text)
-        focusedTextFiled?.updateText(text)
+        inputTextFiledList?.focusedInputTextField.updateText(text)
         
         if let lastChar = text.last,
-            lastChar == "," {
-            print("カンマ")
+            lastChar == "/" {
+            print("スラッシュ")
             
             speechContoller = SpeechController()
             speechContoller?.delegate = self
             
-            inputB.becomeFirstResponderTextFiled()
-            focusedTextFiled = inputB
+            inputTextFiledList?.next()
+            inputTextFiledList?.focusedInputTextField.becomeFirstResponderTextFiled()
+            
         }
     }
 }
