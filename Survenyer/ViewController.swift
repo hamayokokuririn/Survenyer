@@ -38,6 +38,10 @@ class ViewController: UIViewController {
     override func loadView() {
         super.loadView()
         
+        view.backgroundColor = .white
+        
+        navigationItem.title = "Sample1"
+        
         speechActiveLabel.text = "音声を認識していません"
         speechActiveLabel.numberOfLines = 0
         view.addSubview(speechActiveLabel)
