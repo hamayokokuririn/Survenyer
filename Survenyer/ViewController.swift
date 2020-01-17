@@ -15,6 +15,8 @@ class ViewController: UIViewController {
     
     private var speechContoller = SpeechController()
     
+    var sampleNumber = 1
+    
     let viewModelA = SurveyInputTextFiledViewModel()
     
     lazy var inputA: SurveyInputTextFiled = {
@@ -40,7 +42,7 @@ class ViewController: UIViewController {
         
         view.backgroundColor = .white
         
-        navigationItem.title = "Sample1"
+        navigationItem.title = "Sample\(sampleNumber)"
         
         speechActiveLabel.text = "音声を認識していません"
         speechActiveLabel.numberOfLines = 0
@@ -75,6 +77,20 @@ class ViewController: UIViewController {
         view.addSubview(inputC)
         
         inputTextFiledList = InputTextFieldList(list: [inputA, inputB, inputC], focusedInputTextField: inputA)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        let rightBarButton = UIBarButtonItem(title: "Next >", style: .plain, target: self, action: #selector(didPushRightBarButton))
+        
+        self.navigationItem.rightBarButtonItem = rightBarButton
+    }
+    
+    @objc private func didPushRightBarButton() {
+        let vc = ViewController()
+        vc.sampleNumber = sampleNumber + 1
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc private func didPushFinishButton() {
