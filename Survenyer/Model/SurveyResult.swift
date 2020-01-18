@@ -9,7 +9,11 @@
 import Foundation
 
 struct SurveyResult: Codable {
-    let result: [String: SurveySampleResult]
+    var result: [String: SurveySampleResult]
+    
+    mutating func append(sample: [String: SurveySampleResult]) {
+        result.merge(sample) {$1}
+    }
 }
 
 struct SurveySampleResult: Codable {

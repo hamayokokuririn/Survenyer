@@ -18,7 +18,7 @@ class SpeechInputViewController: UIViewController {
     private let shareButton = UIButton()
     
     private var speechDetector = SpeechDetector.shared
-    private let dataStore = SurveyResultDataStore()
+    let dataStore = SurveyResultDataStore()
     
     var sampleNumber = 1
     
@@ -78,6 +78,11 @@ class SpeechInputViewController: UIViewController {
             self.updateTextFieldBackgroundColor(index: 2)
         }
         
+        if let result = dataStore.surveyResult.result[navigationItem.title!] {
+            inputA.updateText(result.fieldA)
+            inputB.updateText(result.fieldB)
+            inputC.updateText(result.fieldC)
+        }
         view.addSubview(inputA)
         view.addSubview(inputB)
         view.addSubview(inputC)
@@ -137,7 +142,7 @@ class SpeechInputViewController: UIViewController {
             recognizeButton.setTitle("音声認識を止める", for: .normal)
             recognizeButton.backgroundColor = .red
             recognizeButton.setTitleColor(.white, for: .normal)
-            speechActiveLabel.text = "音声を認識しています\nスラッシュで次に移ります"
+            speechActiveLabel.text = "音声を認識しています\nコンマで次に移ります"
             return
         }
         
@@ -175,6 +180,8 @@ class SpeechInputViewController: UIViewController {
     @objc private func didPushRightBarButton() {
         let vc = SpeechInputViewController()
         vc.sampleNumber = sampleNumber + 1
+        storeSampleResult()
+        vc.dataStore.surveyResult.append(sample: dataStore.surveyResult.result)
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -183,11 +190,15 @@ class SpeechInputViewController: UIViewController {
         inputA.becomeFirstResponderTextField()
     }
     
-    @objc private func didPushShareButton() {
+    private func storeSampleResult() {
         let result = SurveySampleResult(fieldA: inputA.text,
                                         fieldB: inputB.text,
                                         fieldC: inputC.text)
-        dataStore.surveyResult = SurveyResult(result: [navigationItem.title!: result])
+        dataStore.surveyResult.append(sample: [navigationItem.title!: result])
+    }
+    
+    @objc private func didPushShareButton() {
+        storeSampleResult()
         let items = dataStore.shareItems()
         // 初期化
         let activityVC = UIActivityViewController(activityItems: items, applicationActivities: nil)
@@ -221,8 +232,7 @@ extension SpeechInputViewController: SpeechControllerDelegate {
         previousText = text
 
         if let lastChar = text.last,
-            lastChar == "/" {
-            print("スラッシュ")
+            lastChar == "," {
             previousInputTextCount = text.count
             
             if let existsNext = inputTextFiledList?.next(),

@@ -10,17 +10,15 @@ import Foundation
 import UIKit
 
 final class SurveyResultDataStore {
-    var surveyResult: SurveyResult?
+    var surveyResult: SurveyResult = SurveyResult(result: [String : SurveySampleResult]())
     
     func shareItems() -> [String] {
-                guard let surveyResult = surveyResult else {
-            return []
-        }
+        
         guard let data = try? JSONEncoder().encode(surveyResult) else {
             return []
         }
         let string = String(data: data, encoding: .utf8)!
         return [string]
-                    
+        
     }
 }
