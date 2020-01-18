@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  SpeechInputViewController.swift
 //  Survenyer
 //
 //  Created by 齋藤健悟 on 2020/01/11.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class SpeechInputViewController: UIViewController {
     
     private let speechActiveLabel = UILabel()
     private let finishButton = UIButton()
@@ -88,7 +88,7 @@ class ViewController: UIViewController {
     }
     
     @objc private func didPushRightBarButton() {
-        let vc = ViewController()
+        let vc = SpeechInputViewController()
         vc.sampleNumber = sampleNumber + 1
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -118,7 +118,7 @@ class ViewController: UIViewController {
     
 }
 
-extension ViewController: SpeechControllerDelegate {
+extension SpeechInputViewController: SpeechControllerDelegate {
     func update(_ controller: SpeechController, didUpdate text: String) {
         
         if let lastChar = text.last,
