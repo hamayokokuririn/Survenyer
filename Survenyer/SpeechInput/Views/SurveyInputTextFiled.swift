@@ -15,6 +15,10 @@ final class SurveyInputTextFiled: UIView {
     
     let viewModel: SurveyInputTextFiledViewModel
 
+    var text: String {
+        return textFiled.text ?? ""
+    }
+    
     init(labelText: String, viewModel: SurveyInputTextFiledViewModel) {
         self.viewModel = viewModel
         

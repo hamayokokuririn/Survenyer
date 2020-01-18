@@ -15,8 +15,10 @@ class SpeechInputViewController: UIViewController {
     
     private let speechActiveLabel = UILabel()
     private let recognizeButton = UIButton()
+    private let shareButton = UIButton()
     
     private var speechDetector = SpeechDetector.shared
+    private let dataStore = SurveyResultDataStore()
     
     var sampleNumber = 1
     
@@ -52,6 +54,11 @@ class SpeechInputViewController: UIViewController {
         
         recognizeButton.addTarget(self, action: #selector(didPushRecognizeButton), for: .touchUpInside)
         view.addSubview(recognizeButton)
+        
+        shareButton.setTitle("共有", for: .normal)
+        shareButton.addTarget(self, action: #selector(didPushShareButton), for: .touchUpInside)
+        shareButton.backgroundColor = .blue
+        view.addSubview(shareButton)
         
         viewModelA.handlerShouldBeginEditing = {
             self.speechDetector.startRecognition()
@@ -94,17 +101,6 @@ class SpeechInputViewController: UIViewController {
         speechDetector.delegate = self
     }
     
-    @objc private func didPushRightBarButton() {
-        let vc = SpeechInputViewController()
-        vc.sampleNumber = sampleNumber + 1
-        navigationController?.pushViewController(vc, animated: true)
-    }
-    
-    @objc private func didPushRecognizeButton() {
-        speechDetector.chnageRecognition()
-        inputA.becomeFirstResponderTextField()
-    }
-    
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         let margin = CGFloat(32)
@@ -121,8 +117,15 @@ class SpeechInputViewController: UIViewController {
         speechActiveLabel.frame.origin.x = inputA.frame.minX
         speechActiveLabel.frame.origin.y = inputC.frame.maxY + margin
         
-        recognizeButton.frame = CGRect(x: inputA.frame.minX, y: speechActiveLabel.frame.maxY,
-                                    width: 300, height: 50)
+        recognizeButton.frame = CGRect(x: inputA.frame.minX,
+                                       y: speechActiveLabel.frame.maxY,
+                                       width: 300,
+                                       height: 50)
+        
+        shareButton.frame = CGRect(x: inputA.frame.minX,
+                                   y: recognizeButton.frame.maxY + CGFloat(10),
+                                   width: 300,
+                                   height: 50)
     }
     
     func updateTextForSpeechAvailable(_ available: Bool) {
@@ -167,6 +170,45 @@ class SpeechInputViewController: UIViewController {
             inputB.changeBackgroundColor(unactiveColor)
             inputC.changeBackgroundColor(unactiveColor)
         }
+    }
+    
+    @objc private func didPushRightBarButton() {
+        let vc = SpeechInputViewController()
+        vc.sampleNumber = sampleNumber + 1
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc private func didPushRecognizeButton() {
+        speechDetector.chnageRecognition()
+        inputA.becomeFirstResponderTextField()
+    }
+    
+    @objc private func didPushShareButton() {
+        let result = SurveySampleResult(fieldA: inputA.text,
+                                        fieldB: inputB.text,
+                                        fieldC: inputC.text)
+        dataStore.surveyResult. SurveyResult(result: [navigationItem.title!: result])
+        let items = dataStore.shareItems()
+        // 初期化
+        let activityVC = UIActivityViewController(activityItems: items, applicationActivities: nil)
+                    
+        // UIViewを出すViewを指定：iPadでは以下を入れないと落ちる
+        activityVC.popoverPresentationController?.sourceView = view
+                    
+        // 共有で使用しないタイプを指定
+        let excludedActivityTypes = [
+            UIActivity.ActivityType.postToWeibo,
+            UIActivity.ActivityType.saveToCameraRoll,
+            UIActivity.ActivityType.print
+        ]
+        
+        // タイプを登録
+        activityVC.excludedActivityTypes = excludedActivityTypes
+                    
+        // UIActivityViewControllerを表示
+        self.present(activityVC,
+                     animated: true,
+                     completion: nil)
     }
 
 }
