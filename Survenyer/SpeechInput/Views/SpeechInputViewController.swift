@@ -10,6 +10,9 @@ import UIKit
 
 class SpeechInputViewController: UIViewController {
     
+    private var previousText = ""
+    private var previousInputTextCount = 0
+    
     private let speechActiveLabel = UILabel()
     private let finishButton = UIButton()
     
@@ -37,27 +40,6 @@ class SpeechInputViewController: UIViewController {
     
     var inputTextFiledList: InputTextFieldList?
     
-    private func updateTextFieldBackgroundColor(index: Int) {
-        let activeColor = UIColor(white: 0.8, alpha: 1)
-        let unactiveColor = UIColor(white: 0.9, alpha: 1)
-        switch index {
-        case 0:
-            inputA.changeBackgroundColor(activeColor)
-            inputB.changeBackgroundColor(unactiveColor)
-            inputC.changeBackgroundColor(unactiveColor)
-        case 1:
-            inputA.changeBackgroundColor(unactiveColor)
-            inputB.changeBackgroundColor(activeColor)
-            inputC.changeBackgroundColor(unactiveColor)
-        case 2:
-            inputA.changeBackgroundColor(unactiveColor)
-            inputB.changeBackgroundColor(unactiveColor)
-            inputC.changeBackgroundColor(activeColor)
-        default:
-            break
-        }
-    }
-
     override func loadView() {
         super.loadView()
         
@@ -163,8 +145,27 @@ class SpeechInputViewController: UIViewController {
         speechActiveLabel.text = "音声を認識していません"
     }
     
-    private var previousText = ""
-    private var previousInputTextCount = 0
+    private func updateTextFieldBackgroundColor(index: Int) {
+        let activeColor = UIColor(white: 0.8, alpha: 1)
+        let unactiveColor = UIColor(white: 0.9, alpha: 1)
+        switch index {
+        case 0:
+            inputA.changeBackgroundColor(activeColor)
+            inputB.changeBackgroundColor(unactiveColor)
+            inputC.changeBackgroundColor(unactiveColor)
+        case 1:
+            inputA.changeBackgroundColor(unactiveColor)
+            inputB.changeBackgroundColor(activeColor)
+            inputC.changeBackgroundColor(unactiveColor)
+        case 2:
+            inputA.changeBackgroundColor(unactiveColor)
+            inputB.changeBackgroundColor(unactiveColor)
+            inputC.changeBackgroundColor(activeColor)
+        default:
+            break
+        }
+    }
+
 }
 
 extension SpeechInputViewController: SpeechControllerDelegate {
