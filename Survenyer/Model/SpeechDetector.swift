@@ -10,13 +10,13 @@ import Foundation
 import Speech
 
 protocol SpeechControllerDelegate: class {
-    func update(_ controller: SpeechManager, didUpdate text: String)
+    func update(_ controller: SpeechDetector, didUpdate text: String)
     
-    func update(_ controller: SpeechManager, availabilityDidChange available: Bool)
+    func update(_ controller: SpeechDetector, availabilityDidChange available: Bool)
 }
 
-final class SpeechManager: NSObject {
-    static let shared = SpeechManager()
+final class SpeechDetector: NSObject {
+    static let shared = SpeechDetector()
     
     weak var delegate: SpeechControllerDelegate?
     
@@ -30,7 +30,15 @@ final class SpeechManager: NSObject {
         super.init()
         requestRecognizerAuthorization()
     }
-        
+    
+    func chnageRecognition() {
+        if audioEngine.isRunning {
+            stopRecognition()
+            return
+        }
+        startRecognition()
+    }
+    
     func startRecognition() {
         if !audioEngine.isRunning {
             try! startRecording()

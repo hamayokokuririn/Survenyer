@@ -13,7 +13,7 @@ class SpeechInputViewController: UIViewController {
     private let speechActiveLabel = UILabel()
     private let finishButton = UIButton()
     
-    private var speechContoller = SpeechManager.shared
+    private var speechDetector = SpeechDetector.shared
     
     var sampleNumber = 1
     
@@ -47,23 +47,23 @@ class SpeechInputViewController: UIViewController {
         speechActiveLabel.numberOfLines = 0
         view.addSubview(speechActiveLabel)
         
-        finishButton.addTarget(self, action: #selector(didPushFinishButton), for: .touchUpInside)
+        finishButton.addTarget(self, action: #selector(didPushRecognizeButton), for: .touchUpInside)
         finishButton.backgroundColor = .red
         view.addSubview(finishButton)
         
         viewModelA.handlerShouldBeginEditing = {
-            self.speechContoller.startRecognition()
+            self.speechDetector.startRecognition()
         }
         
         viewModelB.handlerShouldBeginEditing = {
-            self.speechContoller.startRecognition()
+            self.speechDetector.startRecognition()
         }
         
         viewModelC.handlerShouldBeginEditing = {
-            self.speechContoller.startRecognition()
+            self.speechDetector.startRecognition()
         }
         
-        speechContoller.delegate = self
+        speechDetector.delegate = self
         
         view.addSubview(inputA)
         view.addSubview(inputB)
@@ -88,8 +88,8 @@ class SpeechInputViewController: UIViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
     
-    @objc private func didPushFinishButton() {
-        speechContoller.stopRecognition()
+    @objc private func didPushRecognizeButton() {
+        speechDetector.chnageRecognition()
     }
     
     override func viewWillLayoutSubviews() {
@@ -131,7 +131,7 @@ class SpeechInputViewController: UIViewController {
 }
 
 extension SpeechInputViewController: SpeechControllerDelegate {
-    func update(_ controller: SpeechManager, didUpdate text: String) {
+    func update(_ controller: SpeechDetector, didUpdate text: String) {
         guard text != previousText else {
             return
         }
@@ -147,7 +147,7 @@ extension SpeechInputViewController: SpeechControllerDelegate {
                 inputTextFiledList?.focusedInputTextField.becomeFirstResponderTextField()
             } else {
                 inputTextFiledList?.focusedInputTextField.resignFirstResponderTextField()
-                speechContoller.stopRecognition()
+                speechDetector.stopRecognition()
             }
             
             
@@ -162,9 +162,12 @@ extension SpeechInputViewController: SpeechControllerDelegate {
         }
     }
     
-    func update(_ controller: SpeechManager, availabilityDidChange available: Bool) {
+    func update(_ controller: SpeechDetector, availabilityDidChange available: Bool) {
         
         updateTextForSpeechAvailable(available)
+        if !available {
+            previousInputTextCount = 0
+        }
     }
 }
 
