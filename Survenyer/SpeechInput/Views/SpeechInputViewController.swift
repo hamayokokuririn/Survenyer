@@ -187,7 +187,7 @@ class SpeechInputViewController: UIViewController {
         let result = SurveySampleResult(fieldA: inputA.text,
                                         fieldB: inputB.text,
                                         fieldC: inputC.text)
-        dataStore.surveyResult. SurveyResult(result: [navigationItem.title!: result])
+        dataStore.surveyResult = SurveyResult(result: [navigationItem.title!: result])
         let items = dataStore.shareItems()
         // 初期化
         let activityVC = UIActivityViewController(activityItems: items, applicationActivities: nil)
