@@ -31,17 +31,21 @@ final class SpeechManager: NSObject {
         requestRecognizerAuthorization()
     }
         
-    func chnageControl() {
-        if audioEngine.isRunning {
-            audioEngine.stop()
-            recognitionRequest?.endAudio()
-            delegate?.update(self, availabilityDidChange: false)
-        } else {
+    func startRecognition() {
+        if !audioEngine.isRunning {
             try! startRecording()
             delegate?.update(self, availabilityDidChange: true)
         }
     }
     
+    func stopRecognition() {
+        if audioEngine.isRunning {
+            audioEngine.stop()
+            recognitionRequest?.endAudio()
+            delegate?.update(self, availabilityDidChange: false)
+        }
+    }
+        
     
     private func requestRecognizerAuthorization() {
         // 認証処理
@@ -74,8 +78,8 @@ final class SpeechManager: NSObject {
         
         let audioSession = AVAudioSession.sharedInstance()
         // 録音用のカテゴリをセット
-        try audioSession.setCategory(AVAudioSession.Category.record)
-        try audioSession.setMode(AVAudioSession.Mode.measurement)
+        try audioSession.setCategory(.record)
+        try audioSession.setMode(.measurement)
         try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
         
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
@@ -130,7 +134,7 @@ final class SpeechManager: NSObject {
         // startの前にリソースを確保しておく。
         audioEngine.prepare()
         try audioEngine.start()
-        print("どうぞ喋ってください。")
+        delegate?.update(self, availabilityDidChange: true)
     }
     
 }

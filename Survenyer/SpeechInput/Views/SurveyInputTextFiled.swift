@@ -47,8 +47,12 @@ final class SurveyInputTextFiled: UIView {
         textFiled.frame.origin.x = x
     }
     
-    func becomeFirstResponderTextFiled() {
+    func becomeFirstResponderTextField() {
         textFiled.becomeFirstResponder()
+    }
+    
+    func resignFirstResponderTextField() {
+        textFiled.resignFirstResponder()
     }
     
     func updateText(_ text: String) {

@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 final class SurveyInputTextFiledViewModel: NSObject {
-    var handler: (() -> Void)?
+    var handlerShouldBeginEditing: (() -> Void)?
     
 }
 
@@ -22,7 +22,7 @@ extension SurveyInputTextFiledViewModel: UITextFieldDelegate {
     
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         print("start!!!!")
-        handler?()
+        handlerShouldBeginEditing?()
         
         return true
     }

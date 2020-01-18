@@ -17,11 +17,13 @@ final class InputTextFieldList {
         self.focusedInputTextField = focusedInputTextField
     }
     
-    func next() {
-        guard let index = list.firstIndex(of: focusedInputTextField) else { return }
+    func next() -> Bool {
+        guard let index = list.firstIndex(of: focusedInputTextField) else { return false }
         if let intIndex = index as? Int,
             list.indices.contains(intIndex + 1) {
             focusedInputTextField = list[intIndex + 1]
+            return true
         }
+        return false
     }
 }

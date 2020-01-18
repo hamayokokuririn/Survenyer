@@ -51,16 +51,16 @@ class SpeechInputViewController: UIViewController {
         finishButton.backgroundColor = .red
         view.addSubview(finishButton)
         
-        viewModelA.handler = {
-            self.speechContoller.chnageControl()
+        viewModelA.handlerShouldBeginEditing = {
+            self.speechContoller.startRecognition()
         }
         
-        viewModelB.handler = {
-            self.speechContoller.chnageControl()
+        viewModelB.handlerShouldBeginEditing = {
+            self.speechContoller.startRecognition()
         }
         
-        viewModelC.handler = {
-            self.speechContoller.chnageControl()
+        viewModelC.handlerShouldBeginEditing = {
+            self.speechContoller.startRecognition()
         }
         
         speechContoller.delegate = self
@@ -89,7 +89,7 @@ class SpeechInputViewController: UIViewController {
     }
     
     @objc private func didPushFinishButton() {
-        speechContoller.chnageControl()
+        speechContoller.stopRecognition()
     }
     
     override func viewWillLayoutSubviews() {
@@ -126,23 +126,39 @@ class SpeechInputViewController: UIViewController {
         speechActiveLabel.text = "音声を認識していません"
     }
     
+    private var previousText = ""
+    private var previousInputTextCount = 0
 }
 
 extension SpeechInputViewController: SpeechControllerDelegate {
     func update(_ controller: SpeechManager, didUpdate text: String) {
-        
+        guard text != previousText else {
+            return
+        }
+        previousText = text
+
         if let lastChar = text.last,
             lastChar == "/" {
             print("スラッシュ")
+            previousInputTextCount = text.count
             
-            speechContoller = SpeechManager()
-            speechContoller.delegate = self
+            if let existsNext = inputTextFiledList?.next(),
+                existsNext {
+                inputTextFiledList?.focusedInputTextField.becomeFirstResponderTextField()
+            } else {
+                inputTextFiledList?.focusedInputTextField.resignFirstResponderTextField()
+                speechContoller.stopRecognition()
+            }
             
-            inputTextFiledList?.next()
-            inputTextFiledList?.focusedInputTextField.becomeFirstResponderTextFiled()
             
         } else {
-            inputTextFiledList?.focusedInputTextField.updateText(text)
+            let shownText: String
+            if previousInputTextCount == 0 {
+                shownText = text
+            } else {
+                shownText = String(text.dropFirst(previousInputTextCount))
+            }
+            inputTextFiledList?.focusedInputTextField.updateText(shownText)
         }
     }
     
