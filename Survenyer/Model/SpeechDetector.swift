@@ -47,13 +47,17 @@ final class SpeechDetector: NSObject {
     }
     
     func stopRecognition() {
-        if audioEngine.isRunning {
-            audioEngine.stop()
-            recognitionRequest?.endAudio()
-            delegate?.update(self, availabilityDidChange: false)
+        guard audioEngine.isRunning else {
+            return
+        }
+        DispatchQueue.main.async {
+            self.audioEngine.stop()
+            self.audioEngine.inputNode.removeTap(onBus: 0)
+            self.recognitionRequest?.endAudio()
+            self.delegate?.update(self, availabilityDidChange: false)
         }
     }
-        
+    
     
     private func requestRecognizerAuthorization() {
         // 認証処理
