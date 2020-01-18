@@ -129,15 +129,3 @@ final class SpeechController {
     }
     
 }
-
-extension SpeechInputViewController: SFSpeechRecognizerDelegate {
-    // 音声認識の可否が変更したときに呼ばれるdelegate
-    func speechRecognizer(_ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool) {
-        if available {
-            print("音声認識スタート")
-        } else {
-            print("音声認識ストップ")
-        }
-    }
-}
-
