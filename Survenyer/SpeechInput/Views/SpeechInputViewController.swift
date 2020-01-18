@@ -14,7 +14,7 @@ class SpeechInputViewController: UIViewController {
     private var previousInputTextCount = 0
     
     private let speechActiveLabel = UILabel()
-    private let finishButton = UIButton()
+    private let recognizeButton = UIButton()
     
     private var speechDetector = SpeechDetector.shared
     
@@ -50,8 +50,8 @@ class SpeechInputViewController: UIViewController {
         speechActiveLabel.numberOfLines = 0
         view.addSubview(speechActiveLabel)
         
-        finishButton.addTarget(self, action: #selector(didPushRecognizeButton), for: .touchUpInside)
-        view.addSubview(finishButton)
+        recognizeButton.addTarget(self, action: #selector(didPushRecognizeButton), for: .touchUpInside)
+        view.addSubview(recognizeButton)
         
         viewModelA.handlerShouldBeginEditing = {
             self.speechDetector.startRecognition()
@@ -102,6 +102,7 @@ class SpeechInputViewController: UIViewController {
     
     @objc private func didPushRecognizeButton() {
         speechDetector.chnageRecognition()
+        inputA.becomeFirstResponderTextField()
     }
     
     override func viewWillLayoutSubviews() {
@@ -120,7 +121,7 @@ class SpeechInputViewController: UIViewController {
         speechActiveLabel.frame.origin.x = inputA.frame.minX
         speechActiveLabel.frame.origin.y = inputC.frame.maxY + margin
         
-        finishButton.frame = CGRect(x: inputA.frame.minX, y: speechActiveLabel.frame.maxY,
+        recognizeButton.frame = CGRect(x: inputA.frame.minX, y: speechActiveLabel.frame.maxY,
                                     width: 300, height: 50)
     }
     
@@ -130,18 +131,18 @@ class SpeechInputViewController: UIViewController {
             view.layoutIfNeeded()
         }
         if available {
-            finishButton.setTitle("音声認識を止める", for: .normal)
-            finishButton.backgroundColor = .red
-            finishButton.setTitleColor(.white, for: .normal)
+            recognizeButton.setTitle("音声認識を止める", for: .normal)
+            recognizeButton.backgroundColor = .red
+            recognizeButton.setTitleColor(.white, for: .normal)
             speechActiveLabel.text = "音声を認識しています\nスラッシュで次に移ります"
             return
         }
         
-        finishButton.setTitle("音声認識を開始", for: .normal)
-        finishButton.layer.borderColor = UIColor.red.cgColor
-        finishButton.layer.borderWidth = 1
-        finishButton.backgroundColor = .white
-        finishButton.setTitleColor(.black, for: .normal)
+        recognizeButton.setTitle("音声認識を開始", for: .normal)
+        recognizeButton.layer.borderColor = UIColor.red.cgColor
+        recognizeButton.layer.borderWidth = 1
+        recognizeButton.backgroundColor = .white
+        recognizeButton.setTitleColor(.black, for: .normal)
         speechActiveLabel.text = "音声を認識していません"
     }
     
@@ -162,7 +163,9 @@ class SpeechInputViewController: UIViewController {
             inputB.changeBackgroundColor(unactiveColor)
             inputC.changeBackgroundColor(activeColor)
         default:
-            break
+            inputA.changeBackgroundColor(unactiveColor)
+            inputB.changeBackgroundColor(unactiveColor)
+            inputC.changeBackgroundColor(unactiveColor)
         }
     }
 
