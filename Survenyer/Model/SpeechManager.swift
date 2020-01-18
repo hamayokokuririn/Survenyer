@@ -10,11 +10,13 @@ import Foundation
 import Speech
 
 protocol SpeechControllerDelegate: class {
-    func update(_ controller: SpeechController, didUpdate text: String)
+    func update(_ controller: SpeechManager, didUpdate text: String)
+    
+    func update(_ controller: SpeechManager, availabilityDidChange available: Bool)
 }
 
-final class SpeechController {
-    static let shared = SpeechController()
+final class SpeechManager: NSObject {
+    static let shared = SpeechManager()
     
     weak var delegate: SpeechControllerDelegate?
     
@@ -24,7 +26,8 @@ final class SpeechController {
     private var recognitionTask: SFSpeechRecognitionTask?
     private let audioEngine = AVAudioEngine()
     
-    init() {
+    override init() {
+        super.init()
         requestRecognizerAuthorization()
     }
         
@@ -32,10 +35,10 @@ final class SpeechController {
         if audioEngine.isRunning {
             audioEngine.stop()
             recognitionRequest?.endAudio()
-            print("stop")
+            delegate?.update(self, availabilityDidChange: false)
         } else {
             try! startRecording()
-            print("start")
+            delegate?.update(self, availabilityDidChange: true)
         }
     }
     
@@ -103,7 +106,7 @@ final class SpeechController {
                 self.recognitionRequest = nil
                 self.recognitionTask = nil
                 
-                print("音声認識ストップ")
+                self.delegate?.update(self, availabilityDidChange: false)
             }
         }
         
@@ -131,15 +134,3 @@ final class SpeechController {
     }
     
 }
-
-extension SpeechInputViewController: SFSpeechRecognizerDelegate {
-    // 音声認識の可否が変更したときに呼ばれるdelegate
-    func speechRecognizer(_ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool) {
-        if available {
-            print("音声認識スタート")
-        } else {
-            print("音声認識ストップ")
-        }
-    }
-}
-

@@ -13,7 +13,7 @@ class SpeechInputViewController: UIViewController {
     private let speechActiveLabel = UILabel()
     private let finishButton = UIButton()
     
-    private var speechContoller = SpeechController.shared
+    private var speechContoller = SpeechManager.shared
     
     var sampleNumber = 1
     
@@ -44,30 +44,23 @@ class SpeechInputViewController: UIViewController {
         
         navigationItem.title = "Sample\(sampleNumber)"
         
-        speechActiveLabel.text = "音声を認識していません"
         speechActiveLabel.numberOfLines = 0
         view.addSubview(speechActiveLabel)
         
-        finishButton.setTitle("音声認識を止める", for: .normal)
         finishButton.addTarget(self, action: #selector(didPushFinishButton), for: .touchUpInside)
         finishButton.backgroundColor = .red
         view.addSubview(finishButton)
         
         viewModelA.handler = {
             self.speechContoller.chnageControl()
-            self.speechActiveLabel.text = "音声を認識しています\nスラッシュで次に移ります"
-            self.view.setNeedsLayout()
-            self.view.layoutIfNeeded()
         }
         
         viewModelB.handler = {
             self.speechContoller.chnageControl()
-            self.speechActiveLabel.text = "音声を認識しています\nスラッシュで次に移ります"
         }
         
         viewModelC.handler = {
             self.speechContoller.chnageControl()
-            self.speechActiveLabel.text = "音声を認識しています\nスラッシュで次に移ります"
         }
         
         speechContoller.delegate = self
@@ -77,6 +70,8 @@ class SpeechInputViewController: UIViewController {
         view.addSubview(inputC)
         
         inputTextFiledList = InputTextFieldList(list: [inputA, inputB, inputC], focusedInputTextField: inputA)
+        
+        updateTextForSpeechAvailable(false)
     }
     
     override func viewDidLoad() {
@@ -116,16 +111,31 @@ class SpeechInputViewController: UIViewController {
                                     width: 300, height: 50)
     }
     
+    func updateTextForSpeechAvailable(_ available: Bool) {
+        defer {
+            view.setNeedsLayout()
+            view.layoutIfNeeded()
+        }
+        if available {
+            finishButton.setTitle("音声認識を止める", for: .normal)
+            speechActiveLabel.text = "音声を認識しています\nスラッシュで次に移ります"
+            return
+        }
+        
+        finishButton.setTitle("音声認識を開始", for: .normal)
+        speechActiveLabel.text = "音声を認識していません"
+    }
+    
 }
 
 extension SpeechInputViewController: SpeechControllerDelegate {
-    func update(_ controller: SpeechController, didUpdate text: String) {
+    func update(_ controller: SpeechManager, didUpdate text: String) {
         
         if let lastChar = text.last,
             lastChar == "/" {
             print("スラッシュ")
             
-            speechContoller = SpeechController()
+            speechContoller = SpeechManager()
             speechContoller.delegate = self
             
             inputTextFiledList?.next()
@@ -134,6 +144,11 @@ extension SpeechInputViewController: SpeechControllerDelegate {
         } else {
             inputTextFiledList?.focusedInputTextField.updateText(text)
         }
+    }
+    
+    func update(_ controller: SpeechManager, availabilityDidChange available: Bool) {
+        
+        updateTextForSpeechAvailable(available)
     }
 }
 
