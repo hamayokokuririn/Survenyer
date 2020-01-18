@@ -19,8 +19,8 @@ final class InputTextFieldList {
     
     func next() -> Bool {
         guard let index = list.firstIndex(of: focusedInputTextField) else { return false }
-        if let intIndex = index as? Int,
-            list.indices.contains(intIndex + 1) {
+        let intIndex = index as Int
+        if list.indices.contains(intIndex + 1) {
             focusedInputTextField = list[intIndex + 1]
             return true
         }

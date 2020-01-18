@@ -37,6 +37,27 @@ class SpeechInputViewController: UIViewController {
     
     var inputTextFiledList: InputTextFieldList?
     
+    private func updateTextFieldBackgroundColor(index: Int) {
+        let activeColor = UIColor(white: 0.8, alpha: 1)
+        let unactiveColor = UIColor(white: 0.9, alpha: 1)
+        switch index {
+        case 0:
+            inputA.changeBackgroundColor(activeColor)
+            inputB.changeBackgroundColor(unactiveColor)
+            inputC.changeBackgroundColor(unactiveColor)
+        case 1:
+            inputA.changeBackgroundColor(unactiveColor)
+            inputB.changeBackgroundColor(activeColor)
+            inputC.changeBackgroundColor(unactiveColor)
+        case 2:
+            inputA.changeBackgroundColor(unactiveColor)
+            inputB.changeBackgroundColor(unactiveColor)
+            inputC.changeBackgroundColor(activeColor)
+        default:
+            break
+        }
+    }
+
     override func loadView() {
         super.loadView()
         
@@ -48,25 +69,25 @@ class SpeechInputViewController: UIViewController {
         view.addSubview(speechActiveLabel)
         
         finishButton.addTarget(self, action: #selector(didPushRecognizeButton), for: .touchUpInside)
-        finishButton.backgroundColor = .red
         view.addSubview(finishButton)
         
         viewModelA.handlerShouldBeginEditing = {
             self.speechDetector.startRecognition()
             self.inputTextFiledList?.updateFocusedInputTextField(self.inputA)
+            self.updateTextFieldBackgroundColor(index: 0)
         }
         
         viewModelB.handlerShouldBeginEditing = {
             self.speechDetector.startRecognition()
             self.inputTextFiledList?.updateFocusedInputTextField(self.inputB)
+            self.updateTextFieldBackgroundColor(index: 1)
         }
         
         viewModelC.handlerShouldBeginEditing = {
             self.speechDetector.startRecognition()
             self.inputTextFiledList?.updateFocusedInputTextField(self.inputC)
+            self.updateTextFieldBackgroundColor(index: 2)
         }
-        
-        speechDetector.delegate = self
         
         view.addSubview(inputA)
         view.addSubview(inputB)
@@ -83,6 +104,12 @@ class SpeechInputViewController: UIViewController {
         let rightBarButton = UIBarButtonItem(title: "Next >", style: .plain, target: self, action: #selector(didPushRightBarButton))
         
         self.navigationItem.rightBarButtonItem = rightBarButton
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        speechDetector.delegate = self
     }
     
     @objc private func didPushRightBarButton() {
@@ -106,6 +133,7 @@ class SpeechInputViewController: UIViewController {
         
         inputC.frame = CGRect(x: inputA.frame.minX, y: inputB.frame.maxY + margin, width: 300, height: 50)
         
+        speechActiveLabel.frame.size.width = view.frame.size.width - 40
         speechActiveLabel.sizeToFit()
         speechActiveLabel.frame.origin.x = inputA.frame.minX
         speechActiveLabel.frame.origin.y = inputC.frame.maxY + margin
@@ -121,11 +149,17 @@ class SpeechInputViewController: UIViewController {
         }
         if available {
             finishButton.setTitle("音声認識を止める", for: .normal)
+            finishButton.backgroundColor = .red
+            finishButton.setTitleColor(.white, for: .normal)
             speechActiveLabel.text = "音声を認識しています\nスラッシュで次に移ります"
             return
         }
         
         finishButton.setTitle("音声認識を開始", for: .normal)
+        finishButton.layer.borderColor = UIColor.red.cgColor
+        finishButton.layer.borderWidth = 1
+        finishButton.backgroundColor = .white
+        finishButton.setTitleColor(.black, for: .normal)
         speechActiveLabel.text = "音声を認識していません"
     }
     

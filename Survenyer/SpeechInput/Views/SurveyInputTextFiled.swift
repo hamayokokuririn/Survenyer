@@ -27,7 +27,7 @@ final class SurveyInputTextFiled: UIView {
         addSubview(label)
         
         textFiled.delegate = viewModel
-        textFiled.backgroundColor = .systemGray
+        textFiled.backgroundColor = UIColor(white: 0.9, alpha: 1)
         addSubview(textFiled)
     }
     
@@ -57,6 +57,10 @@ final class SurveyInputTextFiled: UIView {
     
     func updateText(_ text: String) {
         textFiled.text = text
+    }
+    
+    func changeBackgroundColor(_ color: UIColor) {
+        textFiled.backgroundColor = color
     }
 }
 
