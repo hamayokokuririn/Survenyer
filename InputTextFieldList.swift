@@ -26,4 +26,8 @@ final class InputTextFieldList {
         }
         return false
     }
+    
+    func updateFocusedInputTextField(_ textField: SurveyInputTextFiled) {
+        self.focusedInputTextField = textField
+    }
 }

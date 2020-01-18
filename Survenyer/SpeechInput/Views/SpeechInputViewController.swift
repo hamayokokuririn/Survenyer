@@ -53,14 +53,17 @@ class SpeechInputViewController: UIViewController {
         
         viewModelA.handlerShouldBeginEditing = {
             self.speechDetector.startRecognition()
+            self.inputTextFiledList?.updateFocusedInputTextField(self.inputA)
         }
         
         viewModelB.handlerShouldBeginEditing = {
             self.speechDetector.startRecognition()
+            self.inputTextFiledList?.updateFocusedInputTextField(self.inputB)
         }
         
         viewModelC.handlerShouldBeginEditing = {
             self.speechDetector.startRecognition()
+            self.inputTextFiledList?.updateFocusedInputTextField(self.inputC)
         }
         
         speechDetector.delegate = self
