@@ -14,6 +14,8 @@ protocol SpeechControllerDelegate: class {
 }
 
 final class SpeechController {
+    static let shared = SpeechController()
+    
     weak var delegate: SpeechControllerDelegate?
     
     // "ja-JP"を指定すると日本語になります。

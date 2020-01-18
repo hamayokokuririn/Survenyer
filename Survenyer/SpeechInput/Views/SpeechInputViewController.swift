@@ -13,7 +13,7 @@ class SpeechInputViewController: UIViewController {
     private let speechActiveLabel = UILabel()
     private let finishButton = UIButton()
     
-    private var speechContoller = SpeechController()
+    private var speechContoller = SpeechController.shared
     
     var sampleNumber = 1
     
