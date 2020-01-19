@@ -99,7 +99,10 @@ class SpeechInputViewController: UIViewController {
                                                        target: self, action: #selector(didPushSettingEditButton))
         let shareButton = UIBarButtonItem(barButtonSystemItem: .action,
                                           target: self, action: #selector(didPushShareButton))
-        toolbarItems = [speechFieldSettingButton, shareButton]
+        
+        let flexibleSpaceButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
+                                          target: nil, action: nil)
+        toolbarItems = [speechFieldSettingButton, flexibleSpaceButton, shareButton]
         navigationController?.setToolbarHidden(false, animated: false)
     }
     
