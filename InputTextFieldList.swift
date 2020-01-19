@@ -9,10 +9,10 @@
 import Foundation
 
 final class InputTextFieldList {
-    var list = [SurveyInputTextFiled]()
-    var focusedInputTextField: SurveyInputTextFiled
+    var list = [SurveyInputTextField]()
+    var focusedInputTextField: SurveyInputTextField
     
-    init(list: [SurveyInputTextFiled], focusedInputTextField: SurveyInputTextFiled) {
+    init(list: [SurveyInputTextField], focusedInputTextField: SurveyInputTextField) {
         self.list = list
         self.focusedInputTextField = focusedInputTextField
     }
@@ -27,7 +27,7 @@ final class InputTextFieldList {
         return false
     }
     
-    func updateFocusedInputTextField(_ textField: SurveyInputTextFiled) {
+    func updateFocusedInputTextField(_ textField: SurveyInputTextField) {
         self.focusedInputTextField = textField
     }
 }

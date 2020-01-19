@@ -24,20 +24,20 @@ class SpeechInputViewController: UIViewController {
     
     let viewModelA = SurveyInputTextFiledViewModel()
     
-    lazy var inputA: SurveyInputTextFiled = {
-        return SurveyInputTextFiled(labelText: "A", viewModel: self.viewModelA)
+    lazy var inputA: SurveyInputTextField = {
+        return SurveyInputTextField(labelText: "A", viewModel: self.viewModelA)
     }()
     
     let viewModelB = SurveyInputTextFiledViewModel()
     
-    lazy var inputB: SurveyInputTextFiled = {
-        return SurveyInputTextFiled(labelText: "B", viewModel: self.viewModelB)
+    lazy var inputB: SurveyInputTextField = {
+        return SurveyInputTextField(labelText: "B", viewModel: self.viewModelB)
     }()
     
     let viewModelC = SurveyInputTextFiledViewModel()
     
-    lazy var inputC: SurveyInputTextFiled = {
-        return SurveyInputTextFiled(labelText: "C", viewModel: self.viewModelC)
+    lazy var inputC: SurveyInputTextField = {
+        return SurveyInputTextField(labelText: "C", viewModel: self.viewModelC)
     }()
     
     var inputTextFiledList: InputTextFieldList?

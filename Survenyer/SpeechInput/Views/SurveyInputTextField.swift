@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-final class SurveyInputTextFiled: UIView {
+final class SurveyInputTextField: UIView {
     private let label = UILabel()
     private let textFiled = UITextField()
     
