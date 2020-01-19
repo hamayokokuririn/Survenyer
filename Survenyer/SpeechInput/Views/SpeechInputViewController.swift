@@ -45,6 +45,7 @@ class SpeechInputViewController: UIViewController {
     override func loadView() {
         super.loadView()
         
+
         view.backgroundColor = .white
         
         navigationItem.title = "Sample\(sampleNumber)"
