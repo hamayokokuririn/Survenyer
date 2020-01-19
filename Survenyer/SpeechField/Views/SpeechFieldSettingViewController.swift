@@ -10,10 +10,16 @@ import Foundation
 import UIKit
 
 final class SpeechFieldSettingViewController: UIViewController {
-    private let mainView = SpeechFieldSettingView()
+    private let dataStore = SurveyResultDataStore.shared
+    
+    private lazy var mainView = SpeechFieldSettingView { (names: [String]) in
+        self.dataStore.updateSettingFieldNames(names)
+    }
     
     override func loadView() {
         super.loadView()
+        
+        view.backgroundColor = .white
         
         view.addSubview(mainView)
     }
@@ -22,5 +28,6 @@ final class SpeechFieldSettingViewController: UIViewController {
         super.viewWillLayoutSubviews()
         
         view.frame = UIScreen.main.bounds
+        mainView.frame = view.frame
     }
 }

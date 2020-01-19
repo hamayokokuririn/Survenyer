@@ -17,16 +17,23 @@ final class SpeechFieldSettingView: UIView {
     private let inputCSettingLabel = UITextField()
     private let saveButton = UIButton()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    private let didPushSaveButtonHandler: ([String]) -> ()
+    
+    init(didPushSaveButtonHandler: @escaping ([String]) -> ()) {
+        self.didPushSaveButtonHandler = didPushSaveButtonHandler
         
-        inputASettingLabel.placeholder = "項目Aの名前"
+        super.init(frame: .zero)
+        
+        inputASettingLabel.backgroundColor = UIColor(white: 0.9, alpha: 1)
+        inputASettingLabel.placeholder = dataStore.fieldNames[0]
         addSubview(inputASettingLabel)
         
-        inputBSettingLabel.placeholder = "項目Bの名前"
+        inputBSettingLabel.backgroundColor = UIColor(white: 0.9, alpha: 1)
+        inputBSettingLabel.placeholder = dataStore.fieldNames[1]
         addSubview(inputBSettingLabel)
         
-        inputCSettingLabel.placeholder = "項目Cの名前"
+        inputCSettingLabel.backgroundColor = UIColor(white: 0.9, alpha: 1)
+        inputCSettingLabel.placeholder = dataStore.fieldNames[2]
         addSubview(inputCSettingLabel)
         
         saveButton.setTitle("保存", for: .normal)
@@ -63,6 +70,8 @@ final class SpeechFieldSettingView: UIView {
     }
     
     @objc private func didPushSaveButton() {
-//        dataStore.updateSettingField()
+        didPushSaveButtonHandler([inputASettingLabel.text!,
+                                  inputBSettingLabel.text!,
+                                  inputCSettingLabel.text!])
     }
 }

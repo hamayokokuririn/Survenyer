@@ -66,6 +66,10 @@ final class SurveyInputTextField: UIView {
     func changeBackgroundColor(_ color: UIColor) {
         textFiled.backgroundColor = color
     }
+    
+    func updateTitle(_ title: String) {
+        label.text = title
+    }
 }
 
 

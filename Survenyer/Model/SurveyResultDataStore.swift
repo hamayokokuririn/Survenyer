@@ -14,6 +14,12 @@ final class SurveyResultDataStore {
     
     var surveyResult: SurveyResult = SurveyResult(result: [String : SurveySampleResult]())
     
+    var fieldNames = ["A", "B", "C"]
+    
+    func updateSettingFieldNames(_ fieldNames: [String]) {
+        self.fieldNames = fieldNames
+    }
+    
     func shareItems() -> [String] {
         
         guard let data = try? JSONEncoder().encode(surveyResult) else {
@@ -21,6 +27,5 @@ final class SurveyResultDataStore {
         }
         let string = String(data: data, encoding: .utf8)!
         return [string]
-        
     }
 }

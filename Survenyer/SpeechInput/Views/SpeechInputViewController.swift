@@ -15,7 +15,6 @@ class SpeechInputViewController: UIViewController {
     
     private let speechActiveLabel = UILabel()
     private let recognizeButton = UIButton()
-    private let shareButton = UIButton()
     
     private var speechDetector = SpeechDetector.shared
     private let dataStore = SurveyResultDataStore.shared
@@ -25,19 +24,19 @@ class SpeechInputViewController: UIViewController {
     let viewModelA = SurveyInputTextFiledViewModel()
     
     lazy var inputA: SurveyInputTextField = {
-        return SurveyInputTextField(labelText: "A", viewModel: self.viewModelA)
+        return SurveyInputTextField(labelText: self.dataStore.fieldNames[0], viewModel: self.viewModelA)
     }()
     
     let viewModelB = SurveyInputTextFiledViewModel()
     
     lazy var inputB: SurveyInputTextField = {
-        return SurveyInputTextField(labelText: "B", viewModel: self.viewModelB)
+        return SurveyInputTextField(labelText: self.dataStore.fieldNames[1], viewModel: self.viewModelB)
     }()
     
     let viewModelC = SurveyInputTextFiledViewModel()
     
     lazy var inputC: SurveyInputTextField = {
-        return SurveyInputTextField(labelText: "C", viewModel: self.viewModelC)
+        return SurveyInputTextField(labelText: self.dataStore.fieldNames[2], viewModel: self.viewModelC)
     }()
     
     var inputTextFiledList: InputTextFieldList?
@@ -45,6 +44,8 @@ class SpeechInputViewController: UIViewController {
     override func loadView() {
         super.loadView()
         
+        
+        hideKeyboardWhenTappedAround()
 
         view.backgroundColor = .white
         
@@ -55,11 +56,6 @@ class SpeechInputViewController: UIViewController {
         
         recognizeButton.addTarget(self, action: #selector(didPushRecognizeButton), for: .touchUpInside)
         view.addSubview(recognizeButton)
-        
-        shareButton.setTitle("CSVファイルで共有", for: .normal)
-        shareButton.addTarget(self, action: #selector(didPushShareButton), for: .touchUpInside)
-        shareButton.backgroundColor = .blue
-        view.addSubview(shareButton)
         
         viewModelA.handlerShouldBeginEditing = {
             self.speechDetector.startRecognition()
@@ -99,13 +95,30 @@ class SpeechInputViewController: UIViewController {
         let rightBarButton = UIBarButtonItem(title: "Next >", style: .plain, target: self, action: #selector(didPushRightBarButton))
         navigationItem.rightBarButtonItem = rightBarButton
         
-        self.navigationItem.rightBarButtonItem = rightBarButton
+        let speechFieldSettingButton = UIBarButtonItem(barButtonSystemItem: .edit,
+                                                       target: self, action: #selector(didPushSettingEditButton))
+        let shareButton = UIBarButtonItem(barButtonSystemItem: .action,
+                                          target: self, action: #selector(didPushShareButton))
+        toolbarItems = [speechFieldSettingButton, shareButton]
+        navigationController?.setToolbarHidden(false, animated: false)
+    }
+    
+    @objc private func didPushSettingEditButton() {
+        let vc = SpeechFieldSettingViewController()
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         speechDetector.delegate = self
+        updateTitles()
+    }
+    
+    private func updateTitles() {
+        inputA.updateTitle(dataStore.fieldNames[0])
+        inputB.updateTitle(dataStore.fieldNames[1])
+        inputC.updateTitle(dataStore.fieldNames[2])
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -134,11 +147,6 @@ class SpeechInputViewController: UIViewController {
                                        y: speechActiveLabel.frame.maxY,
                                        width: 300,
                                        height: 50)
-        
-        shareButton.frame = CGRect(x: inputA.frame.minX,
-                                   y: recognizeButton.frame.maxY + CGFloat(10),
-                                   width: 300,
-                                   height: 50)
     }
     
     func updateTextForSpeechAvailable(_ available: Bool) {
