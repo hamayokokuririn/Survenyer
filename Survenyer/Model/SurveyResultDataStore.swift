@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 
 final class SurveyResultDataStore {
+    static let shared = SurveyResultDataStore()
+    
     var surveyResult: SurveyResult = SurveyResult(result: [String : SurveySampleResult]())
     
     func shareItems() -> [String] {

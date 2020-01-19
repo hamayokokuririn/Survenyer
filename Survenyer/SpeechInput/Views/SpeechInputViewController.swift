@@ -18,7 +18,7 @@ class SpeechInputViewController: UIViewController {
     private let shareButton = UIButton()
     
     private var speechDetector = SpeechDetector.shared
-    let dataStore = SurveyResultDataStore()
+    private let dataStore = SurveyResultDataStore.shared
     
     var sampleNumber = 1
     
@@ -97,6 +97,7 @@ class SpeechInputViewController: UIViewController {
         super.viewDidLoad()
         
         let rightBarButton = UIBarButtonItem(title: "Next >", style: .plain, target: self, action: #selector(didPushRightBarButton))
+        navigationItem.rightBarButtonItem = rightBarButton
         
         self.navigationItem.rightBarButtonItem = rightBarButton
     }
@@ -105,6 +106,12 @@ class SpeechInputViewController: UIViewController {
         super.viewWillAppear(animated)
         
         speechDetector.delegate = self
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        storeSampleResult()
     }
     
     override func viewWillLayoutSubviews() {
@@ -182,7 +189,6 @@ class SpeechInputViewController: UIViewController {
         let vc = SpeechInputViewController()
         vc.sampleNumber = sampleNumber + 1
         storeSampleResult()
-        vc.dataStore.surveyResult.append(sample: dataStore.surveyResult.result)
         navigationController?.pushViewController(vc, animated: true)
     }
     
