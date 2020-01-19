@@ -36,12 +36,11 @@ struct MakeFileAsCSV {
     
     func exportFileAsCSV(fileName: String) -> URL {
         
-        let documentPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        let filePath = documentPath!.appendingPathComponent("\(fileName).csv")
+        let tmpPath = FileManager.default.temporaryDirectory
+        let filePath = tmpPath.appendingPathComponent("\(fileName).csv")
         let csvString = makeStringAsCSV()
         do {
             try csvString.write(to: filePath, atomically: true, encoding: .utf8)
-            
         } catch {
             print(error)
         }
