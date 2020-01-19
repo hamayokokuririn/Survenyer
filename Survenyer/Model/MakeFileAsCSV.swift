@@ -12,7 +12,7 @@ import CSV
 struct MakeFileAsCSV {
     let surveyResult: SurveyResult
     
-    func makeStringAsCSV() -> String {
+    private func makeStringAsCSV() -> String {
         let csv = try! CSVWriter(stream: .toMemory())
 
         // Write a row
@@ -34,17 +34,19 @@ struct MakeFileAsCSV {
         return csvString
     }
     
-    func exportFileAsCSV() {
+    func exportFileAsCSV(fileName: String) -> URL {
         
-        let stream = OutputStream(toFileAtPath: "/path/to/file.csv", append: false)!
-        let csv = try! CSVWriter(stream: stream)
-
-        try! csv.write(row: ["id", "name"])
-        try! csv.write(row: ["1", "foo"])
-        try! csv.write(row: ["1", "bar"])
-
-        csv.stream.close()
-
+        let documentPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        let filePath = documentPath!.appendingPathComponent("\(fileName).csv")
+        let csvString = makeStringAsCSV()
+        do {
+            try csvString.write(to: filePath, atomically: true, encoding: .utf8)
+            
+        } catch {
+            print(error)
+        }
+        
+        return filePath
     }
     
 }

@@ -207,7 +207,7 @@ class SpeechInputViewController: UIViewController {
     @objc private func didPushShareButton() {
         storeSampleResult()
         let maker = MakeFileAsCSV(surveyResult: dataStore.surveyResult)
-        let item = maker.makeStringAsCSV()
+        let item = maker.exportFileAsCSV(fileName: "file")
         // 初期化
         let activityVC = UIActivityViewController(activityItems: [item], applicationActivities: nil)
                     
