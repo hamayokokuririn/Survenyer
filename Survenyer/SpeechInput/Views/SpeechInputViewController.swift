@@ -56,7 +56,7 @@ class SpeechInputViewController: UIViewController {
         recognizeButton.addTarget(self, action: #selector(didPushRecognizeButton), for: .touchUpInside)
         view.addSubview(recognizeButton)
         
-        shareButton.setTitle("共有", for: .normal)
+        shareButton.setTitle("CSVファイルで共有", for: .normal)
         shareButton.addTarget(self, action: #selector(didPushShareButton), for: .touchUpInside)
         shareButton.backgroundColor = .blue
         view.addSubview(shareButton)
@@ -204,16 +204,39 @@ class SpeechInputViewController: UIViewController {
         dataStore.surveyResult.append(sample: [navigationItem.title!: result])
     }
     
-    @objc private func didPushShareButton() {
-        storeSampleResult()
+    private func showFileNameInputAlert() {
+        let ac = UIAlertController(title: "ファイル名を入力", message: "CSV形式で保存します", preferredStyle: .alert)
+        let ok = UIAlertAction(title: "OK", style: .default, handler: {[weak ac] (action) -> Void in
+            guard let text = ac?.textFields?.first?.text else {
+                return
+            }
+            guard !text.isEmpty else {
+                return
+            }
+            self.showShareSheet(fileName: text)
+        })
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+
+        //textfiled1の追加
+        ac.addTextField(configurationHandler: {(text:UITextField!) -> Void in
+            text.placeholder = ".csvは不要です"
+        })
+
+        ac.addAction(ok)
+        ac.addAction(cancel)
+
+        present(ac, animated: true, completion: nil)
+    }
+    
+    private func showShareSheet(fileName: String) {
         let maker = MakeFileAsCSV(surveyResult: dataStore.surveyResult)
-        let item = maker.exportFileAsCSV(fileName: "file")
+        let item = maker.exportFileAsCSV(fileName: fileName)
         // 初期化
         let activityVC = UIActivityViewController(activityItems: [item], applicationActivities: nil)
-                    
+        
         // UIViewを出すViewを指定：iPadでは以下を入れないと落ちる
         activityVC.popoverPresentationController?.sourceView = view
-                    
+        
         // 共有で使用しないタイプを指定
         let excludedActivityTypes = [
             UIActivity.ActivityType.postToWeibo,
@@ -223,13 +246,17 @@ class SpeechInputViewController: UIViewController {
         
         // タイプを登録
         activityVC.excludedActivityTypes = excludedActivityTypes
-                    
+        
         // UIActivityViewControllerを表示
         self.present(activityVC,
                      animated: true,
-                     completion: nil)
+                         completion: nil)
     }
-
+    
+    @objc private func didPushShareButton() {
+        storeSampleResult()
+        showFileNameInputAlert()
+    }
 }
 
 extension SpeechInputViewController: SpeechControllerDelegate {
