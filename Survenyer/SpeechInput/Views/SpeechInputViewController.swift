@@ -131,12 +131,17 @@ class SpeechInputViewController: UIViewController {
         super.viewWillLayoutSubviews()
         let margin = CGFloat(32)
         
-        inputA.frame = CGRect(x: 20, y: 100, width: 300, height: 50)
-        let inputABottom = inputA.frame.maxY
+        inputA.frame.size.width = 300
+        inputA.sizeToFit()
+        inputA.frame.origin = CGPoint(x: 20, y: 100)
         
-        inputB.frame = CGRect(x: inputA.frame.minX, y: inputABottom + margin, width: 300, height: 50)
+        inputB.frame.size.width = 300
+        inputB.sizeToFit()
+        inputB.frame.origin = CGPoint(x: inputA.frame.minX, y: inputA.frame.maxY + margin)
         
-        inputC.frame = CGRect(x: inputA.frame.minX, y: inputB.frame.maxY + margin, width: 300, height: 50)
+        inputC.frame.size.width = 300
+        inputC.sizeToFit()
+        inputC.frame.origin = CGPoint(x: inputA.frame.minX, y: inputB.frame.maxY + margin)
         
         speechActiveLabel.frame.size.width = view.frame.size.width - 40
         speechActiveLabel.sizeToFit()

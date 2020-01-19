@@ -11,12 +11,12 @@ import UIKit
 
 final class SurveyInputTextField: UIView {
     private let label = UILabel()
-    private let textFiled = UITextField()
+    private let textField = UITextField()
     
     let viewModel: SurveyInputTextFiledViewModel
 
     var text: String {
-        return textFiled.text ?? ""
+        return textField.text ?? ""
     }
     
     init(labelText: String, viewModel: SurveyInputTextFiledViewModel) {
@@ -26,13 +26,14 @@ final class SurveyInputTextField: UIView {
         
         
         label.text = labelText
-        label.font = UIFont.preferredFont(forTextStyle: .largeTitle)
+        label.font = UIFont.preferredFont(forTextStyle: .headline)
         
         addSubview(label)
         
-        textFiled.delegate = viewModel
-        textFiled.backgroundColor = UIColor(white: 0.9, alpha: 1)
-        addSubview(textFiled)
+        textField.delegate = viewModel
+        textField.backgroundColor = UIColor(white: 0.9, alpha: 1)
+        textField.font = UIFont.preferredFont(forTextStyle: .body)
+        addSubview(textField)
     }
     
     required init?(coder: NSCoder) {
@@ -44,27 +45,36 @@ final class SurveyInputTextField: UIView {
         super.layoutSubviews()
         
         label.sizeToFit()
+        label.frame.size.width = frame.size.width
         
-        let margin = CGFloat(8)
-        let x = label.frame.size.width + margin
-        textFiled.frame.size = CGSize(width: frame.width - x, height: label.frame.size.height)
-        textFiled.frame.origin.x = x
+        textField.frame.size.width = label.frame.width
+        textField.frame.size.height = 36
+        textField.frame.origin = CGPoint(x: label.frame.minX,
+                                         y: label.frame.maxY)
+    }
+    
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
+        label.frame.size.width = frame.size.width
+        label.sizeToFit()
+        
+        return CGSize(width: size.width,
+                      height: label.frame.height * 2)
     }
     
     func becomeFirstResponderTextField() {
-        textFiled.becomeFirstResponder()
+        textField.becomeFirstResponder()
     }
     
     func resignFirstResponderTextField() {
-        textFiled.resignFirstResponder()
+        textField.resignFirstResponder()
     }
     
     func updateText(_ text: String) {
-        textFiled.text = text
+        textField.text = text
     }
     
     func changeBackgroundColor(_ color: UIColor) {
-        textFiled.backgroundColor = color
+        textField.backgroundColor = color
     }
     
     func updateTitle(_ title: String) {
