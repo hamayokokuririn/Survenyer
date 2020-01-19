@@ -40,7 +40,7 @@ struct MakeFileAsCSV {
         let filePath = tmpPath.appendingPathComponent("\(fileName).csv")
         let csvString = makeStringAsCSV()
         do {
-            try csvString.write(to: filePath, atomically: true, encoding: .utf8)
+            try csvString.write(to: filePath, atomically: true, encoding: .shiftJIS)
         } catch {
             print(error)
         }
