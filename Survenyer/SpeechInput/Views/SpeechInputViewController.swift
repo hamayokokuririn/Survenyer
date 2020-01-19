@@ -199,9 +199,10 @@ class SpeechInputViewController: UIViewController {
     
     @objc private func didPushShareButton() {
         storeSampleResult()
-        let items = dataStore.shareItems()
+        let maker = MakeFileAsCSV(surveyResult: dataStore.surveyResult)
+        let item = maker.makeStringAsCSV()
         // 初期化
-        let activityVC = UIActivityViewController(activityItems: items, applicationActivities: nil)
+        let activityVC = UIActivityViewController(activityItems: [item], applicationActivities: nil)
                     
         // UIViewを出すViewを指定：iPadでは以下を入れないと落ちる
         activityVC.popoverPresentationController?.sourceView = view
