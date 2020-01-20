@@ -37,7 +37,9 @@ final class SpeechFieldSettingView: UIView {
         addSubview(inputCSettingLabel)
         
         saveButton.setTitle("保存", for: .normal)
-        saveButton.backgroundColor = .cyan
+        saveButton.setTitleColor(.black, for: .normal)
+        saveButton.layer.borderColor = UIColor.red.cgColor
+        saveButton.layer.borderWidth = 1
         saveButton.addTarget(self, action: #selector(didPushSaveButton), for: .touchUpInside)
         addSubview(saveButton)
     }

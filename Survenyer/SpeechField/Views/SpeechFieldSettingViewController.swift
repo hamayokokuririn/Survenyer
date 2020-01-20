@@ -13,11 +13,23 @@ final class SpeechFieldSettingViewController: UIViewController {
     private let dataStore = SurveyResultDataStore.shared
     
     private lazy var mainView = SpeechFieldSettingView { (names: [String]) in
-        self.dataStore.updateSettingFieldNames(names)
+        var copyNames = names
+        for (index, name) in names.enumerated() {
+            if name.isEmpty {
+                let str = self.dataStore.fieldNames[index]
+                copyNames[index] = str
+            }
+        }
+        self.dataStore.updateSettingFieldNames(copyNames)
+        self.navigationController?.popViewController(animated: true)
     }
     
     override func loadView() {
         super.loadView()
+        
+        navigationItem.title = "項目名を編集"
+        
+        hideKeyboardWhenTappedAround()
         
         view.backgroundColor = .white
         
