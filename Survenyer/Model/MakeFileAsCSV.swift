@@ -18,7 +18,10 @@ struct MakeFileAsCSV {
         // Write a row
         try! csv.write(row: ["sample", "inputA", "inputB", "inputC"])
 
-        for sample in surveyResult.result {
+        let sortedResult = surveyResult.result.sorted { (result1, result2) -> Bool in
+            result1.key.localizedStandardCompare(result2.key) == .orderedAscending
+        }
+        for sample in sortedResult {
             csv.beginNewRow()
             try! csv.write(field: sample.key)
             try! csv.write(field: sample.value.fieldA)
