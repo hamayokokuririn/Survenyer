@@ -134,17 +134,22 @@ class SpeechInputViewController: UIViewController {
         super.viewWillLayoutSubviews()
         let margin = CGFloat(32)
         
-        inputA.frame.size.width = 300
+        let mainFrame = UIScreen.main.bounds
+        let sideMargin = CGFloat(16)
+        inputA.viewWidth = mainFrame.width - sideMargin * 2
         inputA.sizeToFit()
-        inputA.frame.origin = CGPoint(x: 20, y: 100)
+        inputA.top = (navigationController?.navigationBar.bottom ?? CGFloat(44)) +  margin
+        inputA.left = sideMargin
         
-        inputB.frame.size.width = 300
+        inputB.viewWidth = inputA.viewWidth
         inputB.sizeToFit()
-        inputB.frame.origin = CGPoint(x: inputA.frame.minX, y: inputA.frame.maxY + margin)
+        inputB.top = inputA.bottom + margin
+        inputB.left = inputA.left
         
-        inputC.frame.size.width = 300
+        inputC.viewWidth = inputA.viewWidth
         inputC.sizeToFit()
-        inputC.frame.origin = CGPoint(x: inputA.frame.minX, y: inputB.frame.maxY + margin)
+        inputC.top = inputB.bottom + margin
+        inputC.left = inputA.left
         
         speechActiveLabel.frame.size.width = view.frame.size.width - 40
         speechActiveLabel.sizeToFit()
@@ -179,25 +184,23 @@ class SpeechInputViewController: UIViewController {
     }
     
     private func updateTextFieldBackgroundColor(index: Int) {
-        let activeColor = UIColor(white: 0.8, alpha: 1)
-        let unactiveColor = UIColor(white: 0.9, alpha: 1)
         switch index {
         case 0:
-            inputA.changeBackgroundColor(activeColor)
-            inputB.changeBackgroundColor(unactiveColor)
-            inputC.changeBackgroundColor(unactiveColor)
+            inputA.isSpeechTarget(true)
+            inputB.isSpeechTarget(false)
+            inputC.isSpeechTarget(false)
         case 1:
-            inputA.changeBackgroundColor(unactiveColor)
-            inputB.changeBackgroundColor(activeColor)
-            inputC.changeBackgroundColor(unactiveColor)
+            inputA.isSpeechTarget(false)
+            inputB.isSpeechTarget(true)
+            inputC.isSpeechTarget(false)
         case 2:
-            inputA.changeBackgroundColor(unactiveColor)
-            inputB.changeBackgroundColor(unactiveColor)
-            inputC.changeBackgroundColor(activeColor)
+            inputA.isSpeechTarget(false)
+            inputB.isSpeechTarget(false)
+            inputC.isSpeechTarget(true)
         default:
-            inputA.changeBackgroundColor(unactiveColor)
-            inputB.changeBackgroundColor(unactiveColor)
-            inputC.changeBackgroundColor(unactiveColor)
+            inputA.isSpeechTarget(false)
+            inputB.isSpeechTarget(false)
+            inputC.isSpeechTarget(false)
         }
     }
     

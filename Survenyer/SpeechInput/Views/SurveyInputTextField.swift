@@ -10,6 +10,11 @@ import Foundation
 import UIKit
 
 final class SurveyInputTextField: UIView {
+    private let sideMargin = CGFloat(8)
+    private let labelToTextFieldMargin = CGFloat(4)
+    private let topAndBottomMargin = CGFloat(8)
+    private let textFieldHeight = CGFloat(36)
+    
     private let label = UILabel()
     private let textField = UITextField()
     
@@ -24,15 +29,20 @@ final class SurveyInputTextField: UIView {
         
         super.init(frame: .zero)
         
+        layer.cornerRadius = 4
+        layer.borderColor = UIColor.gray.cgColor
+        layer.borderWidth = 1
         
         label.text = labelText
         label.font = UIFont.preferredFont(forTextStyle: .headline)
-        
+        label.numberOfLines = 0
         addSubview(label)
         
         textField.delegate = viewModel
         textField.backgroundColor = UIColor(white: 0.9, alpha: 1)
         textField.font = UIFont.preferredFont(forTextStyle: .body)
+        textField.placeholder = "音声で入力"
+        textField.layer.cornerRadius = 2
         addSubview(textField)
     }
     
@@ -45,20 +55,24 @@ final class SurveyInputTextField: UIView {
         super.layoutSubviews()
         
         label.sizeToFit()
-        label.frame.size.width = frame.size.width
-        
-        textField.frame.size.width = label.frame.width
-        textField.frame.size.height = 36
-        textField.frame.origin = CGPoint(x: label.frame.minX,
-                                         y: label.frame.maxY)
+        label.viewWidth = viewWidth - sideMargin * 2
+        label.top = topAndBottomMargin
+        label.left = sideMargin
+
+        textField.viewWidth = label.viewWidth
+        textField.viewHeight = textFieldHeight
+        textField.left = label.viewWidth
+        textField.frame.origin = CGPoint(x: label.left,
+                                         y: label.bottom + labelToTextFieldMargin)
     }
     
     override func sizeThatFits(_ size: CGSize) -> CGSize {
-        label.frame.size.width = frame.size.width
+        label.viewWidth = viewWidth
         label.sizeToFit()
         
-        return CGSize(width: size.width,
-                      height: label.frame.height * 2)
+        let height = topAndBottomMargin * 2 + label.viewHeight + textFieldHeight + labelToTextFieldMargin
+        return CGSize(width: viewWidth,
+                      height: height)
     }
     
     func becomeFirstResponderTextField() {
@@ -73,8 +87,16 @@ final class SurveyInputTextField: UIView {
         textField.text = text
     }
     
-    func changeBackgroundColor(_ color: UIColor) {
-        textField.backgroundColor = color
+    func isSpeechTarget(_ isTarget: Bool) {
+        if isTarget {
+            backgroundColor = .green
+            layer.borderColor = UIColor.green.cgColor
+            textField.backgroundColor = .white
+            return
+        }
+        backgroundColor = .white
+        layer.borderColor = UIColor.gray.cgColor
+        textField.backgroundColor = UIColor(white: 0.9, alpha: 1)
     }
     
     func updateTitle(_ title: String) {
