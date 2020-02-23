@@ -23,9 +23,26 @@ targets:
         - SurvenyerTests
     dependencies:
       - package: CSV
+
   SurvenyerTests:
     platform: iOS
     type: bundle.unit-test
     sources: SurvenyerTests
     dependencies:
       - target: Survenyer
+  
+  SurvenyerPreview:
+    platform: iOS
+    type: application
+    deploymentTarget: "13.0"
+    sources:
+      - Survenyer
+      - SurvenyerPreview
+    settings:
+      DEVELOPMENT_TEAM: 39WWX2FY3V
+      INFOPLIST_FILE: Survenyer/Info.plist
+    scheme:
+      testTargets:
+        - SurvenyerTests
+    dependencies:
+      - package: CSV
