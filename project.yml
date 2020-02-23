@@ -1,0 +1,22 @@
+name: Survenyer
+packages:
+  CSV:
+    url: https://github.com/yaslab/CSV.swift
+    version: 2.4.2
+
+options:
+  deploymentTarget:
+    iOS: 13.0
+  bundleIdPrefix: com.saitoh0526.k
+
+targets:
+  Survenyer:
+    platform: iOS
+    type: application
+    sources:
+      - Survenyer
+    settings:
+      DEVELOPMENT_TEAM: 39WWX2FY3V
+      INFOPLIST_FILE: Survenyer/Info.plist
+    dependencies:
+      - package: CSV
