@@ -9,7 +9,12 @@
 import Foundation
 import UIKit
 
-final class SurveyInputTextField: UIView {
+final class SurveyInputTextField: UIView, InputAppliable {
+    enum Input {
+        case setTitleTextVisibility(visible: Bool)
+        case setBorderColor(color: UIColor)
+    }
+    
     private let sideMargin = CGFloat(8)
     private let labelToTextFieldMargin = CGFloat(4)
     private let topAndBottomMargin = CGFloat(8)
@@ -48,6 +53,15 @@ final class SurveyInputTextField: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func apply(input: Input) {
+        switch input {
+        case .setTitleTextVisibility(let visible):
+            label.isHidden = !visible
+        case .setBorderColor(let color):
+            layer.borderColor = color.cgColor
+        }
     }
     
     

@@ -8,7 +8,17 @@
 
 import UIKit
 
-class SpeechInputViewController: UIViewController {
+class SpeechInputViewController: UIViewController,  InputAppliable {
+    enum Input {
+        case setText(text: String)
+    }
+    
+    func apply(input: Input) {
+        switch input {
+        case .setText(let text):
+            navigationItem.title = text
+        }
+    }
     
     private var previousText = ""
     private var previousInputTextCount = 0
