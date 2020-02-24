@@ -7,21 +7,29 @@
 
 import Foundation
 
+typealias VoidClosure = () -> Void
+
 struct SurveyListViewModel {
-    let name: String
-    let dateString: String
     
-    init(name: String, dateString: String) {
-        self.name = name
-        self.dateString = dateString
-    }
+    let list: [SurveyViewModel]
+    let didSelectedHandler: VoidClosure
     
-    init(survey: Survey) {
-        self.name = survey.name
-        let dateFormatter = DateFormatter()
-        dateFormatter.calendar = Calendar(identifier: .gregorian)
-        dateFormatter.dateFormat = "yyyy-mm-dd"
-        let dateString = dateFormatter.string(from: survey.date)
-        self.dateString = dateString
+    struct SurveyViewModel {
+        let name: String
+        let dateString: String
+        
+        init(name: String, dateString: String) {
+            self.name = name
+            self.dateString = dateString
+        }
+        
+        init(survey: Survey) {
+            self.name = survey.name
+            let dateFormatter = DateFormatter()
+            dateFormatter.calendar = Calendar(identifier: .gregorian)
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let dateString = dateFormatter.string(from: survey.date)
+            self.dateString = dateString
+        }
     }
 }

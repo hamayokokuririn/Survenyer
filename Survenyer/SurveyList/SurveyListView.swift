@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 final class SurveyListView: UIView {
-    var surveyList = [SurveyListViewModel]() {
+    var viewModel: SurveyListViewModel {
         didSet {
             setNeedsLayout()
             layoutIfNeeded()
@@ -18,8 +18,10 @@ final class SurveyListView: UIView {
     
     private let table = UITableView()
     private let cellID = "ID"
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(viewModel: SurveyListViewModel) {
+        self.viewModel = viewModel
+        
+        super.init(frame: .zero)
         
         table.dataSource = self
         table.delegate = self
@@ -39,17 +41,19 @@ final class SurveyListView: UIView {
 
 extension SurveyListView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("selected")
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        viewModel.didSelectedHandler()
     }
 }
 
 extension SurveyListView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        surveyList.count
+        viewModel.list.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let survey = surveyList[indexPath.row]
+        let survey = viewModel.list[indexPath.row]
         var cell = tableView.dequeueReusableCell(withIdentifier: cellID)
         if cell == nil {
             cell = UITableViewCell(style: .subtitle, reuseIdentifier: cellID)

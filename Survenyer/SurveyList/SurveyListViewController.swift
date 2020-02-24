@@ -11,12 +11,17 @@ import UIKit
 final class SurveyListViewController: UIViewController {
     
     private var mainView: SurveyListView?
+    private let didSelectHandler = {
+        print("selected")
+    }
     
     override func loadView() {
         super.loadView()
         
-        mainView = SurveyListView(frame: .zero)
+        let viewModel = SurveyListViewModel(list: [], didSelectedHandler: didSelectHandler)
+        mainView = SurveyListView(viewModel: viewModel)
         
+        // TODO: delete
         stub()
         
         if let mainView = mainView {
@@ -25,13 +30,15 @@ final class SurveyListViewController: UIViewController {
     }
     
     func stub() {
-        let survey = Survey(id: SurveyIdentifier(id: ObjectIdentifier(Int.self)),
-                            name: "河川調査",
-                            date: Date(),
-                            surveyItems: [],
-                            samples: [])
-        let viewModel = SurveyListViewModel(survey: survey)
-        mainView?.surveyList = [viewModel]
+        let model1 = SurveyListViewModel.SurveyViewModel(name: "test1",
+                                                         dateString: "2020/02/24")
+        let model2 = SurveyListViewModel.SurveyViewModel(name: "test2",
+                                                         dateString: "2020/02/24")
+        let model3 = SurveyListViewModel.SurveyViewModel(name: "test3",
+                                                         dateString: "2020/02/24")
+        
+        let viewModel = SurveyListViewModel(list: [model1, model2, model3], didSelectedHandler: didSelectHandler)
+        mainView?.viewModel = viewModel
     }
     
     override func viewWillLayoutSubviews() {
@@ -43,13 +50,15 @@ final class SurveyListViewController: UIViewController {
 
 extension SurveyListViewController: InputAppliable {
     enum Input {
-        case setSurveyList(surveyList: [SurveyListViewModel])
+        case setSurveyList(surveyList: [SurveyListViewModel.SurveyViewModel])
     }
     
     func apply(input: SurveyListViewController.Input) {
         switch input {
         case .setSurveyList(let list):
-            mainView?.surveyList = list
+            let viewModel = SurveyListViewModel(list: list,
+                                                didSelectedHandler: {})
+            mainView?.viewModel = viewModel
         }
     }
 }

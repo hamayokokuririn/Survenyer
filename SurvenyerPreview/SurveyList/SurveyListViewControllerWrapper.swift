@@ -29,11 +29,14 @@ struct SurveyListViewControllerWrapper: UIViewControllerRepresentable {
 
 struct SurveyListViewControllerPreview: PreviewProvider {
     static var previews: some View {
-        let survey = SurveyListViewModel(name: "test", dateString: "2020/02/24")
-        let survey2 = SurveyListViewModel(name: "test2", dateString: "2020/02/24")
-        let survey3 = SurveyListViewModel(name: "test3", dateString: "2020/02/24")
+        let model1 = SurveyListViewModel.SurveyViewModel(name: "test1",
+                                                         dateString: "2020/02/24")
+        let model2 = SurveyListViewModel.SurveyViewModel(name: "test2",
+                                                         dateString: "2020/02/24")
+        let model3 = SurveyListViewModel.SurveyViewModel(name: "test3",
+                                                         dateString: "2020/02/24")
         return Group {
-            SurveyListViewControllerWrapper(inputs: [.setSurveyList(surveyList: [survey, survey2, survey3])])
+            SurveyListViewControllerWrapper(inputs: [.setSurveyList(surveyList: [model1, model2, model3])])
         }
     }
     
