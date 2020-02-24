@@ -10,26 +10,21 @@ import UIKit
 
 class SpeechInputViewController: UIViewController,  InputAppliable {
     enum Input {
-        case setText(text: String)
+        case setSampleName(name: String)
     }
     
     func apply(input: Input) {
         switch input {
-        case .setText(let text):
-            navigationItem.title = text
+        case .setSampleName(let name):
+            navigationItem.title = name
         }
     }
     
     private var previousText = ""
     private var previousInputTextCount = 0
     
-    private let speechActiveLabel = UILabel()
-    private let recognizeButton = UIButton()
-    
     private var speechDetector = SpeechDetector.shared
     private let dataStore = SurveyResultDataStore.shared
-    
-    var sampleNumber = 1
     
     let viewModelA = SurveyInputTextFiledViewModel()
     
@@ -51,6 +46,15 @@ class SpeechInputViewController: UIViewController,  InputAppliable {
     
     var inputTextFiledList: InputTextFieldList?
     
+    init(sampleName: String) {
+        super.init(nibName: nil, bundle: nil)
+        navigationItem.title = sampleName
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func loadView() {
         super.loadView()
         
@@ -59,13 +63,7 @@ class SpeechInputViewController: UIViewController,  InputAppliable {
 
         view.backgroundColor = .white
         
-        navigationItem.title = "Sample\(sampleNumber)"
-        
-        speechActiveLabel.numberOfLines = 0
-        view.addSubview(speechActiveLabel)
-        
-        recognizeButton.addTarget(self, action: #selector(didPushRecognizeButton), for: .touchUpInside)
-        view.addSubview(recognizeButton)
+        navigationController?.navigationBar.prefersLargeTitles = true
         
         viewModelA.handlerShouldBeginEditing = {
             self.speechDetector.startRecognition()
@@ -95,28 +93,30 @@ class SpeechInputViewController: UIViewController,  InputAppliable {
         view.addSubview(inputC)
         
         inputTextFiledList = InputTextFieldList(list: [inputA, inputB, inputC], focusedInputTextField: inputA)
-        
-        updateTextForSpeechAvailable(false)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let rightBarButton = UIBarButtonItem(title: "Next >", style: .plain, target: self, action: #selector(didPushRightBarButton))
-        navigationItem.rightBarButtonItem = rightBarButton
+        let nextButton =
+            UIBarButtonItem(title: "進む"
+                , style: .plain,
+                  target: self,
+                  action: #selector(didPushNextButton))
         
-        let speechFieldSettingButton = UIBarButtonItem(barButtonSystemItem: .edit,
-                                                       target: self, action: #selector(didPushSettingEditButton))
-        let shareButton = UIBarButtonItem(barButtonSystemItem: .action,
-                                          target: self, action: #selector(didPushShareButton))
+        let previousButton =
+            UIBarButtonItem(title: "戻る"
+                , style: .plain,
+                  target: self,
+                  action: #selector(didPushPreviousButton))
         
         let flexibleSpaceButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
-                                          target: nil, action: nil)
-        toolbarItems = [speechFieldSettingButton, flexibleSpaceButton, shareButton]
+                                                  target: nil, action: nil)
+        toolbarItems = [flexibleSpaceButton, previousButton, nextButton]
         navigationController?.setToolbarHidden(false, animated: false)
     }
     
-    @objc private func didPushSettingEditButton() {
+    @objc private func didPushNextButton() {
         let vc = SpeechFieldSettingViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -160,37 +160,6 @@ class SpeechInputViewController: UIViewController,  InputAppliable {
         inputC.sizeToFit()
         inputC.top = inputB.bottom + margin
         inputC.left = inputA.left
-        
-        speechActiveLabel.frame.size.width = view.frame.size.width - 40
-        speechActiveLabel.sizeToFit()
-        speechActiveLabel.frame.origin.x = inputA.frame.minX
-        speechActiveLabel.frame.origin.y = inputC.frame.maxY + margin
-        
-        recognizeButton.frame = CGRect(x: inputA.frame.minX,
-                                       y: speechActiveLabel.frame.maxY,
-                                       width: 300,
-                                       height: 50)
-    }
-    
-    func updateTextForSpeechAvailable(_ available: Bool) {
-        defer {
-            view.setNeedsLayout()
-            view.layoutIfNeeded()
-        }
-        if available {
-            recognizeButton.setTitle("音声認識を止める", for: .normal)
-            recognizeButton.backgroundColor = .red
-            recognizeButton.setTitleColor(.white, for: .normal)
-            speechActiveLabel.text = "音声を認識しています\nコンマで次に移ります"
-            return
-        }
-        
-        recognizeButton.setTitle("音声認識を開始", for: .normal)
-        recognizeButton.layer.borderColor = UIColor.red.cgColor
-        recognizeButton.layer.borderWidth = 1
-        recognizeButton.backgroundColor = .white
-        recognizeButton.setTitleColor(.black, for: .normal)
-        speechActiveLabel.text = "音声を認識していません"
     }
     
     private func updateTextFieldBackgroundColor(index: Int) {
@@ -212,13 +181,6 @@ class SpeechInputViewController: UIViewController,  InputAppliable {
             inputB.isSpeechTarget(false)
             inputC.isSpeechTarget(false)
         }
-    }
-    
-    @objc private func didPushRightBarButton() {
-        let vc = SpeechInputViewController()
-        vc.sampleNumber = sampleNumber + 1
-        storeSampleResult()
-        navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc private func didPushRecognizeButton() {
@@ -282,7 +244,7 @@ class SpeechInputViewController: UIViewController,  InputAppliable {
                          completion: nil)
     }
     
-    @objc private func didPushShareButton() {
+    @objc private func didPushPreviousButton() {
         storeSampleResult()
         showFileNameInputAlert()
     }
@@ -321,7 +283,6 @@ extension SpeechInputViewController: SpeechControllerDelegate {
     
     func update(_ controller: SpeechDetector, availabilityDidChange available: Bool) {
         
-        updateTextForSpeechAvailable(available)
         if !available {
             previousInputTextCount = 0
         }

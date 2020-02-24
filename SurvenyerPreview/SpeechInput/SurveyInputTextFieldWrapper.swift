@@ -33,7 +33,6 @@ struct SurveyInputTextFieldPreview: PreviewProvider {
     static var previews: some View {
         Group {
             SurveyInputTextFieldWrapper(inputs: [.setBorderColor(color: .blue)])
-            SurveyInputTextFieldWrapper(inputs: [.setBorderColor(color: .red)])
         }.previewLayout(.fixed(width: 375, height: 80))
     }
     

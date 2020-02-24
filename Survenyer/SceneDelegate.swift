@@ -21,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         if let windowScene = scene as? UIWindowScene {
             window = UIWindow(windowScene: windowScene)
-            let vc = SpeechInputViewController()
+            let vc = SpeechInputViewController(sampleName: "サンプル")
             let navigationController = UINavigationController(rootViewController: vc)
             window?.rootViewController = navigationController
             window?.makeKeyAndVisible()
