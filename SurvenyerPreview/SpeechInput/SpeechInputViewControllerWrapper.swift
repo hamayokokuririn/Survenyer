@@ -17,7 +17,7 @@ struct SpeechInputViewControllerWrapper: UIViewControllerRepresentable {
     }
     
     func makeUIViewController(context: UIViewControllerRepresentableContext<SpeechInputViewControllerWrapper>) -> SpeechInputViewController {
-        SpeechInputViewController(nibName: nil, bundle: nil)
+        SpeechInputViewController(sampleName: "test")
     }
     
     func updateUIViewController(_ uiViewController: SpeechInputViewController, context: UIViewControllerRepresentableContext<SpeechInputViewControllerWrapper>) {
@@ -30,7 +30,7 @@ struct SpeechInputViewControllerWrapper: UIViewControllerRepresentable {
 struct SpeechInputViewControllerPreview: PreviewProvider {
     static var previews: some View {
         Group {
-            SpeechInputViewControllerWrapper(inputs: [.setText(text: "test")])
+            SpeechInputViewControllerWrapper(inputs: [.setSampleName(name: "No.1")])
         }
     }
     
