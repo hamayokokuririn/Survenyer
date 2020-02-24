@@ -25,7 +25,7 @@ struct SurveyDetailViewControllerWrapper: UIViewControllerRepresentable {
                             measuredResult: [id.id : "loadViewAdding"])
         let viewModel = SurveyDetailViewModel(name: "調査その1",
                                               dateString: "2020/02/24",
-                                              surveyItemList: [surveyItem, surveyItem2],
+                                              surveyItemList: [surveyItem, surveyItem2, surveyItem, surveyItem2, surveyItem, surveyItem2, surveyItem, surveyItem2],
                                               sampleList: [sample])
         return SurveyDetailViewController(viewModel: viewModel)
     }
@@ -45,7 +45,7 @@ struct SurveyDetailViewControllerPreview: PreviewProvider {
                             name: "Sample1", measuredResult: [SurveyItemIdentifier(id: ObjectIdentifier(Int.self)).id : "result2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"])
         return Group {
             SurveyDetailViewControllerWrapper(inputs: [.setSurveyItems(items: ["テスト", "サンプル", "温度"]),
-                                                       .setSamples(samples: [sample, sample2])])
+                                                       .setSamples(samples: [sample, sample2, sample, sample2, sample, sample2, sample, sample2, sample, sample2, sample, sample2])])
         }
     }
     

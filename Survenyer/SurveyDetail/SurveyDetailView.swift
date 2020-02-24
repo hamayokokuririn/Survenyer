@@ -65,6 +65,7 @@ final class SurveyDetailView: UIView {
         sampleTable.top = surveyItemView.bottom + CGFloat(8)
         
         contentScrollView.frame.size = CGSize(width: viewWidth, height: viewHeight)
+        contentScrollView.contentSize = CGSize(width: viewWidth, height: viewHeight)
     }
 }
 
