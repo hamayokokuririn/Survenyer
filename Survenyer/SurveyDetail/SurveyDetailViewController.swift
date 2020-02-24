@@ -10,33 +10,48 @@ import UIKit
 
 final class SurveyDetailViewController: UIViewController {
     var mainView: SurveyDetailView?
+    let viewModel: SurveyDetailViewModel
+    
+    init(viewModel: SurveyDetailViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func loadView() {
         super.loadView()
         
         view.backgroundColor = .white
+        setupNavigationItem()
         
         mainView = SurveyDetailView()
+        mainView?.viewModel = viewModel
         if let mainView = mainView {
             view.addSubview(mainView)
         }
-        
-        addViewModel()
     }
     
-    private func addViewModel() {
-        let id = SurveyItemIdentifier(id: ObjectIdentifier(Int.self))
-        let surveyItem = SurveyItem(id: id, name: "温度")
-        let surveyItem2 = SurveyItem(id: id, name: "湿度")
-        let sample = Sample(id: SampleIdentifier(id: ObjectIdentifier(Int.self)),
-                            name: "No.1",
-                            measuredResult: [id.id : "loadViewAdding"])
-        let viewModel = SurveyDetailViewModel(name: "調査その1",
-                                              dateString: "2020/02/24",
-                                              surveyItemList: [surveyItem, surveyItem2],
-                                              sampleList: [sample])
+    private func setupNavigationItem() {
+        navigationItem.title = viewModel.name
+        navigationController?.navigationBar.prefersLargeTitles = true
         
-        mainView?.viewModel = viewModel
+        let addButton =
+            UIBarButtonItem(title: "+"
+                , style: .plain,
+                  target: self,
+                  action: #selector(didPushAddButton))
+        
+        let flexibleSpaceButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
+                                                  target: nil, action: nil)
+        toolbarItems = [flexibleSpaceButton, addButton]
+        navigationController?.setToolbarHidden(false, animated: false)
+    }
+    
+    @objc private func didPushAddButton() {
+        print("didPushAdd")
     }
 
     override func viewWillLayoutSubviews() {

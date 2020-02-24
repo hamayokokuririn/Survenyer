@@ -17,7 +17,17 @@ struct SurveyDetailViewControllerWrapper: UIViewControllerRepresentable {
     }
     
     func makeUIViewController(context: UIViewControllerRepresentableContext<SurveyDetailViewControllerWrapper>) -> SurveyDetailViewController {
-        SurveyDetailViewController(nibName: nil, bundle: nil)
+        let id = SurveyItemIdentifier(id: ObjectIdentifier(Int.self))
+        let surveyItem = SurveyItem(id: id, name: "温度")
+        let surveyItem2 = SurveyItem(id: id, name: "湿度")
+        let sample = Sample(id: SampleIdentifier(id: ObjectIdentifier(Int.self)),
+                            name: "No.1",
+                            measuredResult: [id.id : "loadViewAdding"])
+        let viewModel = SurveyDetailViewModel(name: "調査その1",
+                                              dateString: "2020/02/24",
+                                              surveyItemList: [surveyItem, surveyItem2],
+                                              sampleList: [sample])
+        return SurveyDetailViewController(viewModel: viewModel)
     }
     
     func updateUIViewController(_ uiViewController: SurveyDetailViewController, context: UIViewControllerRepresentableContext<SurveyDetailViewControllerWrapper>) {

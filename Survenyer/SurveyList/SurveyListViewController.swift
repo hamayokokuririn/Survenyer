@@ -13,7 +13,17 @@ final class SurveyListViewController: UIViewController {
     private var mainView: SurveyListView?
     private var didSelectHandler: VoidClosure {
         return {
-            let vc = SurveyDetailViewController()
+            let id = SurveyItemIdentifier(id: ObjectIdentifier(Int.self))
+            let surveyItem = SurveyItem(id: id, name: "温度")
+            let surveyItem2 = SurveyItem(id: id, name: "湿度")
+            let sample = Sample(id: SampleIdentifier(id: ObjectIdentifier(Int.self)),
+                                name: "No.1",
+                                measuredResult: [id.id : "loadViewAdding"])
+            let viewModel = SurveyDetailViewModel(name: "調査その1",
+                                                  dateString: "2020/02/24",
+                                                  surveyItemList: [surveyItem, surveyItem2],
+                                                  sampleList: [sample, sample, sample, sample, sample, sample, sample, sample, sample, sample])
+            let vc = SurveyDetailViewController(viewModel: viewModel)
             self.navigationController?.pushViewController(vc, animated: true)
         }
     }
@@ -24,12 +34,34 @@ final class SurveyListViewController: UIViewController {
         let viewModel = SurveyListViewModel(list: [], didSelectedHandler: didSelectHandler)
         mainView = SurveyListView(viewModel: viewModel)
         
+        setupNavigationItem()
         // TODO: delete
         stub()
         
         if let mainView = mainView {
             view.addSubview(mainView)
         }
+        
+    }
+    
+    private func setupNavigationItem() {
+        navigationItem.title = "調査票"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        
+        let addButton =
+            UIBarButtonItem(title: "+"
+                , style: .plain,
+                  target: self,
+                  action: #selector(didPushAddButton))
+        
+        let flexibleSpaceButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
+                                                  target: nil, action: nil)
+        toolbarItems = [flexibleSpaceButton, addButton]
+        navigationController?.setToolbarHidden(false, animated: false)
+    }
+    
+    @objc private func didPushAddButton() {
+        print("add pushed")
     }
     
     func stub() {
