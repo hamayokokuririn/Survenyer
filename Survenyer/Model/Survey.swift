@@ -29,5 +29,11 @@ struct SurveyItemIdentifier: Identifiable {
 }
 
 struct Sample {
+    let id: SampleIdentifier
+    let name: String
     let measuredResult: [SurveyItemIdentifier.ID: String]
+}
+
+struct SampleIdentifier: Identifiable {
+    let id: ObjectIdentifier
 }

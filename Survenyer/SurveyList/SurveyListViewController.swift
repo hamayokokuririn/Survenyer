@@ -11,10 +11,13 @@ import UIKit
 final class SurveyListViewController: UIViewController {
     
     private var mainView: SurveyListView?
-    private let didSelectHandler = {
-        print("selected")
+    private var didSelectHandler: VoidClosure {
+        return {
+            let vc = SurveyDetailViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
     }
-    
+        
     override func loadView() {
         super.loadView()
         
