@@ -10,22 +10,17 @@ import UIKit
 
 final class SurveyDetailView: UIView {
     
+    private let sideMargin = CGFloat(16)
+    
     var viewModel: SurveyDetailViewModel? {
         didSet {
             guard let viewModel = viewModel else {return}
             dateLabel.text = viewModel.dateString
-            surveyItemView.text = viewModel.surveyItemListString
+            surveyItemView.setItemList(item: viewModel.surveyItemListString)
             
             setNeedsLayout()
             layoutIfNeeded()
         }
-    }
-    
-    private var tableViewHeight: CGFloat {
-        guard let count = viewModel?.sampleList.count else {
-            return .zero
-        }
-        return CGFloat(count) * 60
     }
     
     private let cellID = "ID"
@@ -33,7 +28,7 @@ final class SurveyDetailView: UIView {
     private let contentScrollView = UIScrollView()
     
     private let dateLabel = UILabel()
-    private let surveyItemView = UILabel()
+    private let surveyItemView = SurveyDetailItemView()
     private let sampleTable = UITableView()
     
     init() {
@@ -41,11 +36,13 @@ final class SurveyDetailView: UIView {
         
         addSubview(contentScrollView)
         contentScrollView.addSubview(dateLabel)
+        
         contentScrollView.addSubview(surveyItemView)
         
         sampleTable.isScrollEnabled = false
         sampleTable.dataSource = self
         contentScrollView.addSubview(sampleTable)
+        contentScrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 44, right: 0)
     }
     
     required init?(coder: NSCoder) {
@@ -55,14 +52,19 @@ final class SurveyDetailView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        let contentWidth = viewWidth - sideMargin * 2
+        dateLabel.viewWidth = contentWidth
         dateLabel.sizeToFit()
+        dateLabel.left = sideMargin
         
+        surveyItemView.viewWidth = contentWidth
         surveyItemView.sizeToFit()
-        surveyItemView.top = dateLabel.bottom + CGFloat(8)
+        surveyItemView.left = sideMargin
+        surveyItemView.top = dateLabel.bottom + CGFloat(24)
         
-        sampleTable.viewHeight = tableViewHeight
+        sampleTable.viewHeight = viewHeight - surveyItemView.bottom
         sampleTable.viewWidth = viewWidth
-        sampleTable.top = surveyItemView.bottom + CGFloat(8)
+        sampleTable.top = surveyItemView.bottom + CGFloat(24)
         
         contentScrollView.frame.size = CGSize(width: viewWidth, height: viewHeight)
         contentScrollView.contentSize = CGSize(width: viewWidth, height: viewHeight)
@@ -89,13 +91,17 @@ extension SurveyDetailView: UITableViewDataSource {
             cell = UITableViewCell(style: .subtitle,
                                    reuseIdentifier: cellID)
         }
-        
+        cell?.accessoryType = .disclosureIndicator
         cell?.textLabel?.text = sample.name
         cell?.detailTextLabel?.text = sample.measuredResult.first!.value
         cell?.detailTextLabel?.numberOfLines = 2
         cell?.detailTextLabel?.lineBreakMode = .byWordWrapping
         
         return cell!
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        "サンプル"
     }
     
 }
