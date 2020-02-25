@@ -55,6 +55,9 @@ final class SurveyDetailViewController: UIViewController {
         }
         navigationItem.title = titleName
         navigationController?.navigationBar.prefersLargeTitles = true
+        let editButton = UIBarButtonItem(barButtonSystemItem: .edit,
+                                         target: self, action: #selector(didPushEditButton))
+        navigationItem.rightBarButtonItem = editButton
         
         let addButton =
             UIBarButtonItem(title: "+"
@@ -69,9 +72,15 @@ final class SurveyDetailViewController: UIViewController {
     }
     
     @objc private func didPushAddButton() {
-        print("didPushAdd")
+        let vc = SpeechInputViewController(sampleName: "新規サンプル")
+        navigationController?.pushViewController(vc, animated: true)
     }
-
+    
+    @objc private func didPushEditButton() {
+        let vc = SpeechFieldSettingViewController()
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
