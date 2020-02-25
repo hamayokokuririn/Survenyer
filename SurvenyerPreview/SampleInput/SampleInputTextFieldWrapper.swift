@@ -7,22 +7,22 @@
 
 import SwiftUI
 
-struct SurveyInputTextFieldWrapper: UIViewRepresentable {
-    typealias UIViewType = SurveyInputTextField
+struct SampleInputTextFieldWrapper: UIViewRepresentable {
+    typealias UIViewType = SampleInputTextField
     
-    let inputs: [SurveyInputTextField.Input]
+    let inputs: [SampleInputTextField.Input]
     
-    init(inputs: [SurveyInputTextField.Input]) {
+    init(inputs: [SampleInputTextField.Input]) {
         self.inputs = inputs
     }
     
-    func makeUIView(context: UIViewRepresentableContext<SurveyInputTextFieldWrapper>) -> SurveyInputTextField {
+    func makeUIView(context: UIViewRepresentableContext<SampleInputTextFieldWrapper>) -> SampleInputTextField {
         let viewModel = SurveyInputTextFiledViewModel()
-        return SurveyInputTextField(labelText: "Kengo",
+        return SampleInputTextField(labelText: "Kengo",
                              viewModel: viewModel)
     }
     
-    func updateUIView(_ uiView: SurveyInputTextField, context: UIViewRepresentableContext<SurveyInputTextFieldWrapper>) {
+    func updateUIView(_ uiView: SampleInputTextField, context: UIViewRepresentableContext<SampleInputTextFieldWrapper>) {
         inputs.forEach {
             uiView.apply(input: $0)
         }
@@ -32,7 +32,7 @@ struct SurveyInputTextFieldWrapper: UIViewRepresentable {
 struct SurveyInputTextFieldPreview: PreviewProvider {
     static var previews: some View {
         Group {
-            SurveyInputTextFieldWrapper(inputs: [.setBorderColor(color: .blue)])
+            SampleInputTextFieldWrapper(inputs: [.setBorderColor(color: .blue)])
         }.previewLayout(.fixed(width: 375, height: 80))
     }
     

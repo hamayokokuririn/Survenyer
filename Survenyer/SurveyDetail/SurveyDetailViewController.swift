@@ -17,7 +17,7 @@ final class SurveyDetailViewController: UIViewController {
             guard let name = self.viewModel?.name else {
                 return
             }
-            let vc = SpeechInputViewController(sampleName: name)
+            let vc = SampleInputViewController(sampleName: name)
             self.navigationController?.pushViewController(vc, animated: true)
         }
     }
@@ -72,7 +72,7 @@ final class SurveyDetailViewController: UIViewController {
     }
     
     @objc private func didPushAddButton() {
-        let vc = SpeechInputViewController(sampleName: "新規サンプル")
+        let vc = SampleInputViewController(sampleName: "新規サンプル")
         navigationController?.pushViewController(vc, animated: true)
     }
     

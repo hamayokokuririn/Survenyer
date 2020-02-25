@@ -1,5 +1,5 @@
 //
-//  SpeechInputViewController.swift
+//  SampleInputViewController.swift
 //  Survenyer
 //
 //  Created by 齋藤健悟 on 2020/01/11.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SpeechInputViewController: UIViewController,  InputAppliable {
+class SampleInputViewController: UIViewController, InputAppliable {
     enum Input {
         case setSampleName(name: String)
     }
@@ -28,20 +28,20 @@ class SpeechInputViewController: UIViewController,  InputAppliable {
     
     let viewModelA = SurveyInputTextFiledViewModel()
     
-    lazy var inputA: SurveyInputTextField = {
-        return SurveyInputTextField(labelText: self.dataStore.fieldNames[0], viewModel: self.viewModelA)
+    lazy var inputA: SampleInputTextField = {
+        return SampleInputTextField(labelText: self.dataStore.fieldNames[0], viewModel: self.viewModelA)
     }()
     
     let viewModelB = SurveyInputTextFiledViewModel()
     
-    lazy var inputB: SurveyInputTextField = {
-        return SurveyInputTextField(labelText: self.dataStore.fieldNames[1], viewModel: self.viewModelB)
+    lazy var inputB: SampleInputTextField = {
+        return SampleInputTextField(labelText: self.dataStore.fieldNames[1], viewModel: self.viewModelB)
     }()
     
     let viewModelC = SurveyInputTextFiledViewModel()
     
-    lazy var inputC: SurveyInputTextField = {
-        return SurveyInputTextField(labelText: self.dataStore.fieldNames[2], viewModel: self.viewModelC)
+    lazy var inputC: SampleInputTextField = {
+        return SampleInputTextField(labelText: self.dataStore.fieldNames[2], viewModel: self.viewModelC)
     }()
     
     var inputTextFiledList: InputTextFieldList?
@@ -250,7 +250,7 @@ class SpeechInputViewController: UIViewController,  InputAppliable {
     }
 }
 
-extension SpeechInputViewController: SpeechControllerDelegate {
+extension SampleInputViewController: SpeechControllerDelegate {
     func update(_ controller: SpeechDetector, didUpdate text: String) {
         guard text != previousText else {
             return

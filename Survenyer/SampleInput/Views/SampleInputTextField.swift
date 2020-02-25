@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-final class SurveyInputTextField: UIView, InputAppliable {
+final class SampleInputTextField: UIView, InputAppliable {
     enum Input {
         case setTitleTextVisibility(visible: Bool)
         case setBorderColor(color: UIColor)
