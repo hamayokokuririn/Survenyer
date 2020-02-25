@@ -19,7 +19,8 @@ final class SurveyListViewController: UIViewController {
             let sample = Sample(id: SampleIdentifier(id: ObjectIdentifier(Int.self)),
                                 name: "No.1",
                                 measuredResult: [id.id : "loadViewAdding"])
-            let viewModel = SurveyDetailViewModel(name: "調査その1",
+            let viewModel = SurveyDetailViewModel(didSelectHandler: nil,
+                                                  name: "調査その1",
                                                   dateString: "2020/02/24",
                                                   surveyItemList: [surveyItem, surveyItem2],
                                                   sampleList: [sample, sample, sample, sample, sample, sample, sample, sample, sample, sample])

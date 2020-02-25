@@ -41,6 +41,7 @@ final class SurveyDetailView: UIView {
         
         sampleTable.isScrollEnabled = false
         sampleTable.dataSource = self
+        sampleTable.delegate = self
         contentScrollView.addSubview(sampleTable)
         contentScrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 44, right: 0)
     }
@@ -104,4 +105,11 @@ extension SurveyDetailView: UITableViewDataSource {
         "サンプル"
     }
     
+}
+
+extension SurveyDetailView: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        viewModel?.didSelectHandler?()
+    }
 }

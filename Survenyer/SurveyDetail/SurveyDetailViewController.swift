@@ -10,11 +10,26 @@ import UIKit
 
 final class SurveyDetailViewController: UIViewController {
     var mainView: SurveyDetailView?
-    let viewModel: SurveyDetailViewModel
+    var viewModel: SurveyDetailViewModel?
+    
+    private var didSelectHandler: VoidClosure {
+        return {
+            guard let name = self.viewModel?.name else {
+                return
+            }
+            let vc = SpeechInputViewController(sampleName: name)
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+    }
     
     init(viewModel: SurveyDetailViewModel) {
-        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        let newViewModel = SurveyDetailViewModel(didSelectHandler: self.didSelectHandler,
+                                                 name: viewModel.name,
+                                                 dateString: viewModel.dateString,
+                                                 surveyItemList: viewModel.surveyItemList,
+                                                 sampleList: viewModel.sampleList)
+        self.viewModel = newViewModel
     }
     
     required init?(coder: NSCoder) {
@@ -35,7 +50,10 @@ final class SurveyDetailViewController: UIViewController {
     }
     
     private func setupNavigationItem() {
-        navigationItem.title = viewModel.name
+        guard let titleName = viewModel?.name else {
+            return
+        }
+        navigationItem.title = titleName
         navigationController?.navigationBar.prefersLargeTitles = true
         
         let addButton =

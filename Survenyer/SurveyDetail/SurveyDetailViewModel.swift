@@ -8,6 +8,9 @@
 import Foundation
 
 struct SurveyDetailViewModel {
+    
+    var didSelectHandler: VoidClosure?
+    
     let name: String
     let dateString: String
     let surveyItemList: [SurveyItem]
