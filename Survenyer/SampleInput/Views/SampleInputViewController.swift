@@ -8,47 +8,19 @@
 
 import UIKit
 
-class SampleInputViewController: UIViewController, InputAppliable {
-    enum Input {
-        case setSampleName(name: String)
-    }
-    
-    func apply(input: Input) {
-        switch input {
-        case .setSampleName(let name):
-            navigationItem.title = name
-        }
-    }
-    
+final class SampleInputViewController: UIViewController {
     private var previousText = ""
     private var previousInputTextCount = 0
     
     private var speechDetector = SpeechDetector.shared
     private let dataStore = SurveyResultDataStore.shared
     
-    let viewModelA = SurveyInputTextFiledViewModel()
-    
-    lazy var inputA: SampleInputTextField = {
-        return SampleInputTextField(labelText: self.dataStore.fieldNames[0], viewModel: self.viewModelA)
-    }()
-    
-    let viewModelB = SurveyInputTextFiledViewModel()
-    
-    lazy var inputB: SampleInputTextField = {
-        return SampleInputTextField(labelText: self.dataStore.fieldNames[1], viewModel: self.viewModelB)
-    }()
-    
-    let viewModelC = SurveyInputTextFiledViewModel()
-    
-    lazy var inputC: SampleInputTextField = {
-        return SampleInputTextField(labelText: self.dataStore.fieldNames[2], viewModel: self.viewModelC)
-    }()
-    
     var inputTextFiledList: InputTextFieldList?
+    private var contentScrollView: UIScrollView?
     
     init(sampleName: String) {
         super.init(nibName: nil, bundle: nil)
-        navigationItem.title = sampleName
+        setupBar(sampleName: sampleName)
     }
     
     required init?(coder: NSCoder) {
@@ -58,45 +30,82 @@ class SampleInputViewController: UIViewController, InputAppliable {
     override func loadView() {
         super.loadView()
         
-        
         hideKeyboardWhenTappedAround()
-
         view.backgroundColor = .white
         
-        navigationController?.navigationBar.prefersLargeTitles = true
+        contentScrollView = UIScrollView()
+        if let contentScrollView = contentScrollView {
+            view.addSubview(contentScrollView)
+        }
         
-        viewModelA.handlerShouldBeginEditing = {
+        let handlerShouldBeginEditing = {
             self.speechDetector.startRecognition()
-            self.inputTextFiledList?.updateFocusedInputTextField(self.inputA)
             self.updateTextFieldBackgroundColor(index: 0)
         }
         
-        viewModelB.handlerShouldBeginEditing = {
-            self.speechDetector.startRecognition()
-            self.inputTextFiledList?.updateFocusedInputTextField(self.inputB)
-            self.updateTextFieldBackgroundColor(index: 1)
+        inputTextFiledList = InputTextFieldList(handlerShouldBeginEditing: handlerShouldBeginEditing)
+        inputTextFiledList?.list.forEach {
+            self.contentScrollView?.addSubview($0)
         }
-        
-        viewModelC.handlerShouldBeginEditing = {
-            self.speechDetector.startRecognition()
-            self.inputTextFiledList?.updateFocusedInputTextField(self.inputC)
-            self.updateTextFieldBackgroundColor(index: 2)
-        }
-        
-        if let result = dataStore.surveyResult.result[navigationItem.title!] {
-            inputA.updateText(result.fieldA)
-            inputB.updateText(result.fieldB)
-            inputC.updateText(result.fieldC)
-        }
-        view.addSubview(inputA)
-        view.addSubview(inputB)
-        view.addSubview(inputC)
-        
-        inputTextFiledList = InputTextFieldList(list: [inputA, inputB, inputC], focusedInputTextField: inputA)
+        inputTextFiledList?.updateText()
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        speechDetector.delegate = self
+        updateTitles()
+    }
+    
+    private func updateTitles() {
+        inputTextFiledList?.updateTitles()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        storeSampleResult()
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        contentScrollView?.frame = view.frame
+        
+        let margin = CGFloat(32)
+        let sideMargin = CGFloat(16)
+        var topPosition = margin
+        inputTextFiledList?.list.forEach {
+            $0.viewWidth = view.viewWidth - sideMargin * 2
+            $0.sizeToFit()
+            $0.top = topPosition
+            topPosition += $0.viewHeight + margin
+            $0.left = sideMargin
+        }
+        
+        contentScrollView?.contentSize = CGSize(width: view.viewWidth, height: topPosition)
+        
+    }
+    
+    private func updateTextFieldBackgroundColor(index: Int) {
+        inputTextFiledList?.updateTextFieldBackgroundColor(index: index)
+    }
+    
+    private func storeSampleResult() {
+        inputTextFiledList?.storeSampleResult()
+    }
+    
+    @objc private func didPushNextButton() {
+        
+    }
+    
+    @objc private func didPushPreviousButton() {
+        
+    }
+    
+    private func setupBar(sampleName: String) {
+        navigationItem.title = sampleName
+        navigationController?.navigationBar.prefersLargeTitles = true
         
         let nextButton =
             UIBarButtonItem(title: "進む"
@@ -116,138 +125,7 @@ class SampleInputViewController: UIViewController, InputAppliable {
         navigationController?.setToolbarHidden(false, animated: false)
     }
     
-    @objc private func didPushNextButton() {
-        let vc = SpeechFieldSettingViewController()
-        navigationController?.pushViewController(vc, animated: true)
-    }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        speechDetector.delegate = self
-        updateTitles()
-    }
-    
-    private func updateTitles() {
-        inputA.updateTitle(dataStore.fieldNames[0])
-        inputB.updateTitle(dataStore.fieldNames[1])
-        inputC.updateTitle(dataStore.fieldNames[2])
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        storeSampleResult()
-    }
-    
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        let margin = CGFloat(32)
-        
-        let mainFrame = UIScreen.main.bounds
-        let sideMargin = CGFloat(16)
-        inputA.viewWidth = mainFrame.width - sideMargin * 2
-        inputA.sizeToFit()
-        inputA.top = (navigationController?.navigationBar.bottom ?? CGFloat(44)) +  margin
-        inputA.left = sideMargin
-        
-        inputB.viewWidth = inputA.viewWidth
-        inputB.sizeToFit()
-        inputB.top = inputA.bottom + margin
-        inputB.left = inputA.left
-        
-        inputC.viewWidth = inputA.viewWidth
-        inputC.sizeToFit()
-        inputC.top = inputB.bottom + margin
-        inputC.left = inputA.left
-    }
-    
-    private func updateTextFieldBackgroundColor(index: Int) {
-        switch index {
-        case 0:
-            inputA.isSpeechTarget(true)
-            inputB.isSpeechTarget(false)
-            inputC.isSpeechTarget(false)
-        case 1:
-            inputA.isSpeechTarget(false)
-            inputB.isSpeechTarget(true)
-            inputC.isSpeechTarget(false)
-        case 2:
-            inputA.isSpeechTarget(false)
-            inputB.isSpeechTarget(false)
-            inputC.isSpeechTarget(true)
-        default:
-            inputA.isSpeechTarget(false)
-            inputB.isSpeechTarget(false)
-            inputC.isSpeechTarget(false)
-        }
-    }
-    
-    @objc private func didPushRecognizeButton() {
-        speechDetector.chnageRecognition()
-        inputA.becomeFirstResponderTextField()
-    }
-    
-    private func storeSampleResult() {
-        let result = SurveySampleResult(fieldA: inputA.text,
-                                        fieldB: inputB.text,
-                                        fieldC: inputC.text)
-        dataStore.surveyResult.append(sample: [navigationItem.title!: result])
-    }
-    
-    private func showFileNameInputAlert() {
-        let ac = UIAlertController(title: "ファイル名を入力", message: "CSV形式で保存します", preferredStyle: .alert)
-        let ok = UIAlertAction(title: "OK", style: .default, handler: {[weak ac] (action) -> Void in
-            guard let text = ac?.textFields?.first?.text else {
-                return
-            }
-            guard !text.isEmpty else {
-                return
-            }
-            self.showShareSheet(fileName: text)
-        })
-        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-
-        //textfiled1の追加
-        ac.addTextField(configurationHandler: {(text:UITextField!) -> Void in
-            text.placeholder = ".csvは不要です"
-        })
-
-        ac.addAction(ok)
-        ac.addAction(cancel)
-
-        present(ac, animated: true, completion: nil)
-    }
-    
-    private func showShareSheet(fileName: String) {
-        let maker = MakeFileAsCSV(surveyResult: dataStore.surveyResult)
-        let item = maker.exportFileAsCSV(fileName: fileName)
-        // 初期化
-        let activityVC = UIActivityViewController(activityItems: [item], applicationActivities: nil)
-        
-        // UIViewを出すViewを指定：iPadでは以下を入れないと落ちる
-        activityVC.popoverPresentationController?.sourceView = view
-        
-        // 共有で使用しないタイプを指定
-        let excludedActivityTypes = [
-            UIActivity.ActivityType.postToWeibo,
-            UIActivity.ActivityType.saveToCameraRoll,
-            UIActivity.ActivityType.print
-        ]
-        
-        // タイプを登録
-        activityVC.excludedActivityTypes = excludedActivityTypes
-        
-        // UIActivityViewControllerを表示
-        self.present(activityVC,
-                     animated: true,
-                         completion: nil)
-    }
-    
-    @objc private func didPushPreviousButton() {
-        storeSampleResult()
-        showFileNameInputAlert()
-    }
 }
 
 extension SampleInputViewController: SpeechControllerDelegate {
@@ -285,6 +163,19 @@ extension SampleInputViewController: SpeechControllerDelegate {
         
         if !available {
             previousInputTextCount = 0
+        }
+    }
+}
+
+extension SampleInputViewController: InputAppliable {
+    enum Input {
+        case setSampleName(name: String)
+    }
+    
+    func apply(input: Input) {
+        switch input {
+        case .setSampleName(let name):
+            navigationItem.title = name
         }
     }
 }

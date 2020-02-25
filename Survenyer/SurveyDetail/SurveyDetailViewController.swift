@@ -64,10 +64,12 @@ final class SurveyDetailViewController: UIViewController {
                 , style: .plain,
                   target: self,
                   action: #selector(didPushAddButton))
-        
+        let shareButton = UIBarButtonItem(barButtonSystemItem: .action,
+                                          target: self,
+                                          action: #selector(showFileNameInputAlert))
         let flexibleSpaceButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
                                                   target: nil, action: nil)
-        toolbarItems = [flexibleSpaceButton, addButton]
+        toolbarItems = [shareButton, flexibleSpaceButton, addButton]
         navigationController?.setToolbarHidden(false, animated: false)
     }
     
@@ -85,6 +87,57 @@ final class SurveyDetailViewController: UIViewController {
         super.viewWillLayoutSubviews()
         
         mainView?.frame = view.frame
+    }
+    
+    // CSV保存
+    @objc private func showFileNameInputAlert() {
+        let ac = UIAlertController(title: "ファイル名を入力", message: "CSV形式で保存します", preferredStyle: .alert)
+        let ok = UIAlertAction(title: "OK", style: .default, handler: {[weak ac] (action) -> Void in
+            guard let text = ac?.textFields?.first?.text else {
+                return
+            }
+            guard !text.isEmpty else {
+                return
+            }
+            self.showShareSheet(fileName: text)
+        })
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+
+        //textfiled1の追加
+        ac.addTextField(configurationHandler: {(text:UITextField!) -> Void in
+            text.placeholder = ".csvは不要です"
+        })
+
+        ac.addAction(ok)
+        ac.addAction(cancel)
+
+        present(ac, animated: true, completion: nil)
+    }
+
+    private func showShareSheet(fileName: String) {
+        let dataStore = SurveyResultDataStore.shared
+        let maker = MakeFileAsCSV(surveyResult: dataStore.surveyResult)
+        let item = maker.exportFileAsCSV(fileName: fileName)
+        // 初期化
+        let activityVC = UIActivityViewController(activityItems: [item], applicationActivities: nil)
+
+        // UIViewを出すViewを指定：iPadでは以下を入れないと落ちる
+        activityVC.popoverPresentationController?.sourceView = view
+
+        // 共有で使用しないタイプを指定
+        let excludedActivityTypes = [
+            UIActivity.ActivityType.postToWeibo,
+            UIActivity.ActivityType.saveToCameraRoll,
+            UIActivity.ActivityType.print
+        ]
+
+        // タイプを登録
+        activityVC.excludedActivityTypes = excludedActivityTypes
+
+        // UIActivityViewControllerを表示
+        self.present(activityVC,
+                     animated: true,
+                         completion: nil)
     }
 }
 

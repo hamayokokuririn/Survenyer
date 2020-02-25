@@ -11,10 +11,16 @@ import Foundation
 final class InputTextFieldList {
     var list = [SampleInputTextField]()
     var focusedInputTextField: SampleInputTextField
+    private let dataStore = SurveyResultDataStore.shared
     
-    init(list: [SampleInputTextField], focusedInputTextField: SampleInputTextField) {
-        self.list = list
-        self.focusedInputTextField = focusedInputTextField
+    init(handlerShouldBeginEditing: @escaping () -> Void) {
+        self.list = dataStore.fieldNames.map {
+            let viewModel = SurveyInputTextFiledViewModel()
+            viewModel.handlerShouldBeginEditing = handlerShouldBeginEditing
+            let input = SampleInputTextField(labelText: $0, viewModel: viewModel)
+            return input
+        }
+        self.focusedInputTextField = list.first!
     }
     
     func next() -> Bool {
@@ -29,5 +35,32 @@ final class InputTextFieldList {
     
     func updateFocusedInputTextField(_ textField: SampleInputTextField) {
         self.focusedInputTextField = textField
+    }
+    
+    func updateText() {
+//        if let result = dataStore.surveyResult.result[navigationItem.title!] {
+//            inputA.updateText(result.fieldA)
+//            inputB.updateText(result.fieldB)
+//            inputC.updateText(result.fieldC)
+//        }
+    }
+    
+    func updateTitles() {
+        for (index, field) in list.enumerated() {
+            field.updateTitle(dataStore.fieldNames[index])
+        }
+    }
+    
+    func updateTextFieldBackgroundColor(index: Int) {
+        list.forEach{$0.isSpeechTarget(false)}
+        list[index].isSpeechTarget(true)
+    }
+    
+    func storeSampleResult() {
+        
+//        let result = SurveySampleResult(fieldA: inputA.text,
+//                                        fieldB: inputB.text,
+//                                        fieldC: inputC.text)
+//        dataStore.surveyResult.append(sample: [navigationItem.title!: result])
     }
 }

@@ -14,7 +14,7 @@ final class SurveyResultDataStore {
     
     var surveyResult: SurveyResult = SurveyResult(result: [String : SurveySampleResult]())
     
-    var fieldNames = ["A", "B", "C"]
+    var fieldNames = ["A", "B", "C", "D", "E", "F", "G", "H"]
     
     func updateSettingFieldNames(_ fieldNames: [String]) {
         self.fieldNames = fieldNames
