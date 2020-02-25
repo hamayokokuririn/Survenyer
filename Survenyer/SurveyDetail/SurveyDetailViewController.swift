@@ -79,7 +79,7 @@ final class SurveyDetailViewController: UIViewController {
     }
     
     @objc private func didPushEditButton() {
-        let vc = SpeechFieldSettingViewController()
+        let vc = SurveyEditViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
     

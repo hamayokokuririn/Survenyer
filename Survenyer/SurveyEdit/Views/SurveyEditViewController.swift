@@ -9,10 +9,10 @@
 import Foundation
 import UIKit
 
-final class SpeechFieldSettingViewController: UIViewController {
+final class SurveyEditViewController: UIViewController {
     private let dataStore = SurveyResultDataStore.shared
     
-    private lazy var mainView = SpeechFieldSettingView { (names: [String]) in
+    private lazy var mainView = SurveyEditView { (names: [String]) in
         var copyNames = names
         for (index, name) in names.enumerated() {
             if name.isEmpty {

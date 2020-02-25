@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-final class SpeechFieldSettingView: UIView {
+final class SurveyEditView: UIView {
     private let dataStore = SurveyResultDataStore.shared
     
     private let inputASettingLabel = UITextField()
