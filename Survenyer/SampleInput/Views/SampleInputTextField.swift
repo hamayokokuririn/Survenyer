@@ -29,7 +29,7 @@ final class SampleInputTextField: UIView, InputAppliable {
         return textField.text ?? ""
     }
     
-    init(labelText: String, viewModel: SurveyInputTextFiledViewModel) {
+    init(viewModel: SurveyInputTextFiledViewModel) {
         self.viewModel = viewModel
         
         super.init(frame: .zero)
@@ -38,7 +38,7 @@ final class SampleInputTextField: UIView, InputAppliable {
         layer.borderColor = UIColor.gray.cgColor
         layer.borderWidth = 1
         
-        label.text = labelText
+        label.text = viewModel.surveyItem.name
         label.font = UIFont.preferredFont(forTextStyle: .headline)
         label.numberOfLines = 0
         addSubview(label)

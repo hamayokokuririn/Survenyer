@@ -17,9 +17,9 @@ struct SampleInputTextFieldWrapper: UIViewRepresentable {
     }
     
     func makeUIView(context: UIViewRepresentableContext<SampleInputTextFieldWrapper>) -> SampleInputTextField {
-        let viewModel = SurveyInputTextFiledViewModel()
-        return SampleInputTextField(labelText: "Kengo",
-                             viewModel: viewModel)
+        let viewModel = SurveyInputTextFiledViewModel(surveyItem: SurveyItem(id: SurveyItemIdentifier(id: 0),
+                                                                             name: "test"))
+        return SampleInputTextField(viewModel: viewModel)
     }
     
     func updateUIView(_ uiView: SampleInputTextField, context: UIViewRepresentableContext<SampleInputTextFieldWrapper>) {

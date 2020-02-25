@@ -12,15 +12,18 @@ final class SampleInputViewController: UIViewController {
     private var previousText = ""
     private var previousInputTextCount = 0
     
+    private var sample: Sample
+    
     private var speechDetector = SpeechDetector.shared
     private let dataStore = SurveyResultDataStore.shared
     
     var inputTextFiledList: InputTextFieldList?
     private var contentScrollView: UIScrollView?
     
-    init(sampleName: String) {
+    init(sample: Sample) {
+        self.sample = sample
         super.init(nibName: nil, bundle: nil)
-        setupBar(sampleName: sampleName)
+        setupBar(sampleName: sample.name)
     }
     
     required init?(coder: NSCoder) {
@@ -43,7 +46,7 @@ final class SampleInputViewController: UIViewController {
             self.updateTextFieldBackgroundColor(index: 0)
         }
         
-        inputTextFiledList = InputTextFieldList(handlerShouldBeginEditing: handlerShouldBeginEditing)
+        inputTextFiledList = InputTextFieldList(surveyResults: sample.results)
         inputTextFiledList?.list.forEach {
             self.contentScrollView?.addSubview($0)
         }
@@ -58,7 +61,7 @@ final class SampleInputViewController: UIViewController {
     }
     
     private func updateTitles() {
-        inputTextFiledList?.updateTitles()
+//        inputTextFiledList?.updateTitles()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -139,13 +142,13 @@ extension SampleInputViewController: SpeechControllerDelegate {
             lastChar == "," {
             previousInputTextCount = text.count
             
-            if let existsNext = inputTextFiledList?.next(),
-                existsNext {
-                inputTextFiledList?.focusedInputTextField.becomeFirstResponderTextField()
-            } else {
-                inputTextFiledList?.focusedInputTextField.resignFirstResponderTextField()
-                speechDetector.stopRecognition()
-            }
+//            if let existsNext = inputTextFiledList?.next(),
+//                existsNext {
+//                inputTextFiledList?.focusedInputTextField.becomeFirstResponderTextField()
+//            } else {
+//                inputTextFiledList?.focusedInputTextField.resignFirstResponderTextField()
+//                speechDetector.stopRecognition()
+//            }
             
             
         } else {
@@ -155,7 +158,7 @@ extension SampleInputViewController: SpeechControllerDelegate {
             } else {
                 shownText = String(text.dropFirst(previousInputTextCount))
             }
-            inputTextFiledList?.focusedInputTextField.updateText(shownText)
+//            inputTextFiledList?.focusedInputTextField.updateText(shownText)
         }
     }
     

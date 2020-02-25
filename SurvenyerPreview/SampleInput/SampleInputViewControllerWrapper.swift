@@ -17,7 +17,10 @@ struct SampleInputViewControllerWrapper: UIViewControllerRepresentable {
     }
     
     func makeUIViewController(context: UIViewControllerRepresentableContext<SampleInputViewControllerWrapper>) -> SampleInputViewController {
-        SampleInputViewController(sampleName: "test")
+        let sample = Sample(id: SampleIdentifier(id: 0),
+                            name: "Test",
+                            results: [])
+        return SampleInputViewController(sample: sample)
     }
     
     func updateUIViewController(_ uiViewController: SampleInputViewController, context: UIViewControllerRepresentableContext<SampleInputViewControllerWrapper>) {

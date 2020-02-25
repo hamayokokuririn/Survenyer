@@ -14,10 +14,10 @@ final class SurveyDetailViewController: UIViewController {
     
     private var didSelectHandler: VoidClosure {
         return {
-            guard let name = self.viewModel?.name else {
+            guard let sample = self.viewModel?.sampleList.first else {
                 return
             }
-            let vc = SampleInputViewController(sampleName: name)
+            let vc = SampleInputViewController(sample: sample)
             self.navigationController?.pushViewController(vc, animated: true)
         }
     }
@@ -74,7 +74,17 @@ final class SurveyDetailViewController: UIViewController {
     }
     
     @objc private func didPushAddButton() {
-        let vc = SampleInputViewController(sampleName: "新規サンプル")
+        guard let lastSample = viewModel?.sampleList.last else {
+            return
+        }
+        guard let newResults = viewModel?.surveyItemList.map( {
+            SurveyResult(item: $0, result: "")
+        }) else {
+            return
+        }
+        let newID = SampleIdentifier(id: lastSample.id.id + 1)
+        let sample = Sample(id: newID, name: "新規サンプル", results: newResults)
+        let vc = SampleInputViewController(sample: sample)
         navigationController?.pushViewController(vc, animated: true)
     }
     

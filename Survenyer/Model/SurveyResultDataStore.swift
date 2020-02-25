@@ -12,6 +12,9 @@ import UIKit
 final class SurveyResultDataStore {
     static let shared = SurveyResultDataStore()
     
+    // TODO: どの調査票のサンプルかを判断できる様にすること
+    var sampleList = [Sample]()
+    
     var surveyResult = SurveyResultCodable(result: [String : SurveySampleResult]())
     
     var fieldNames = ["A", "B", "C", "D", "E", "F", "G", "H"]
@@ -27,5 +30,16 @@ final class SurveyResultDataStore {
         }
         let string = String(data: data, encoding: .utf8)!
         return [string]
+    }
+    
+    func updateSample(sample: Sample) {
+        guard let index = sampleList.firstIndex(where: {
+            $0.id.id == sample.id.id
+        }) else {
+            // 重複がない場合は新規追加
+            sampleList.append(sample)
+            return
+        }
+        sampleList[index] = sample
     }
 }

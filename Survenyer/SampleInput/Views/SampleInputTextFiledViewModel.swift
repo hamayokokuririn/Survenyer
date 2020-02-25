@@ -10,13 +10,20 @@ import Foundation
 import UIKit
 
 final class SurveyInputTextFiledViewModel: NSObject {
-    var handlerShouldBeginEditing: (() -> Void)?
+    let surveyItem: SurveyItem
+    init(surveyItem: SurveyItem) {
+        self.surveyItem = surveyItem
+    }
     
+    var handlerShouldBeginEditing: (() -> Void)?
+    var didUpdateTextHandler: ((SurveyResult) -> Void)?
 }
 
 extension SurveyInputTextFiledViewModel: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         print(string)
+        didUpdateTextHandler?(SurveyResult(item: surveyItem,
+                                           result: string))
         return true
     }
     

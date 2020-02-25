@@ -10,28 +10,25 @@ import Foundation
 
 final class InputTextFieldList {
     var list = [SampleInputTextField]()
-    var focusedInputTextField: SampleInputTextField
-    private let dataStore = SurveyResultDataStore.shared
+    var focusedInputTextField: SampleInputTextField?
     
-    init(handlerShouldBeginEditing: @escaping () -> Void) {
-        self.list = dataStore.fieldNames.map {
-            let viewModel = SurveyInputTextFiledViewModel()
-            viewModel.handlerShouldBeginEditing = handlerShouldBeginEditing
-            let input = SampleInputTextField(labelText: $0, viewModel: viewModel)
+    init(surveyResults: [SurveyResult]) {
+        self.list = surveyResults.map {
+            let viewModel = SurveyInputTextFiledViewModel(surveyItem: $0.item)
+            let input = SampleInputTextField(viewModel: viewModel)
             return input
         }
-        self.focusedInputTextField = list.first!
     }
     
-    func next() -> Bool {
-        guard let index = list.firstIndex(of: focusedInputTextField) else { return false }
-        let intIndex = index as Int
-        if list.indices.contains(intIndex + 1) {
-            focusedInputTextField = list[intIndex + 1]
-            return true
-        }
-        return false
-    }
+//    func next() -> Bool {
+//        guard let index = list.firstIndex(of: focusedInputTextField) else { return false }
+//        let intIndex = index as Int
+//        if list.indices.contains(intIndex + 1) {
+//            focusedInputTextField = list[intIndex + 1]
+//            return true
+//        }
+//        return false
+//    }
     
     func updateFocusedInputTextField(_ textField: SampleInputTextField) {
         self.focusedInputTextField = textField
@@ -45,11 +42,11 @@ final class InputTextFieldList {
 //        }
     }
     
-    func updateTitles() {
-        for (index, field) in list.enumerated() {
-            field.updateTitle(dataStore.fieldNames[index])
-        }
-    }
+//    func updateTitles() {
+//        for (index, field) in list.enumerated() {
+//            field.updateTitle(dataStore.fieldNames[index])
+//        }
+//    }
     
     func updateTextFieldBackgroundColor(index: Int) {
         list.forEach{$0.isSpeechTarget(false)}
