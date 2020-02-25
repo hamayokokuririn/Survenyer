@@ -152,8 +152,8 @@ extension SurveyDetailViewController: InputAppliable {
         case .setSurveyItems(let items):
             guard let samples = mainView?.viewModel?.sampleList else {return}
             let surveyItemList = items.map {
-                return SurveyItem(id: SurveyItemIdentifier(id: ObjectIdentifier(Int.self)),
-                                                           name: $0)
+                return SurveyItem(id: SurveyItemIdentifier(id: 0),
+                                  name: $0)
             }
             let viewModel = SurveyDetailViewModel(name: "test",
                                                   dateString: "2020/02/24",

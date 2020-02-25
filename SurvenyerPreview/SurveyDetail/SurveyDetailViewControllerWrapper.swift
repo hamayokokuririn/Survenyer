@@ -17,12 +17,12 @@ struct SurveyDetailViewControllerWrapper: UIViewControllerRepresentable {
     }
     
     func makeUIViewController(context: UIViewControllerRepresentableContext<SurveyDetailViewControllerWrapper>) -> SurveyDetailViewController {
-        let id = SurveyItemIdentifier(id: ObjectIdentifier(Int.self))
+        let id = SurveyItemIdentifier(id: 0)
         let surveyItem = SurveyItem(id: id, name: "温度")
         let surveyItem2 = SurveyItem(id: id, name: "湿度")
-        let sample = Sample(id: SampleIdentifier(id: ObjectIdentifier(Int.self)),
+        let sample = Sample(id: SampleIdentifier(id: 0),
                             name: "No.1",
-                            measuredResult: [id.id : "loadViewAdding"])
+                            results: [])
         let viewModel = SurveyDetailViewModel(name: "調査その1",
                                               dateString: "2020/02/24",
                                               surveyItemList: [surveyItem, surveyItem2, surveyItem, surveyItem2, surveyItem, surveyItem2, surveyItem, surveyItem2],
@@ -39,10 +39,10 @@ struct SurveyDetailViewControllerWrapper: UIViewControllerRepresentable {
 
 struct SurveyDetailViewControllerPreview: PreviewProvider {
     static var previews: some View {
-        let sample = Sample(id: SampleIdentifier(id: ObjectIdentifier(Int.self)),
-                             name: "Sample1", measuredResult: [SurveyItemIdentifier(id: ObjectIdentifier(Int.self)).id : "result"])
-        let sample2 = Sample(id: SampleIdentifier(id: ObjectIdentifier(Int.self)),
-                            name: "Sample1", measuredResult: [SurveyItemIdentifier(id: ObjectIdentifier(Int.self)).id : "result2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"])
+        let sample = Sample(id: SampleIdentifier(id: 0),
+                            name: "Sample1", results: [])
+        let sample2 = Sample(id: SampleIdentifier(id: 1),
+                             name: "Sample2", results: [])
         return Group {
             SurveyDetailViewControllerWrapper(inputs: [.setSurveyItems(items: ["テスト", "サンプル", "温度"]),
                                                        .setSamples(samples: [sample, sample2, sample, sample2, sample, sample2, sample, sample2, sample, sample2, sample, sample2])])

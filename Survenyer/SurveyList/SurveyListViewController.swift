@@ -13,12 +13,12 @@ final class SurveyListViewController: UIViewController {
     private var mainView: SurveyListView?
     private var didSelectHandler: VoidClosure {
         return {
-            let id = SurveyItemIdentifier(id: ObjectIdentifier(Int.self))
+            let id = SurveyItemIdentifier(id: 0)
             let surveyItem = SurveyItem(id: id, name: "温度")
             let surveyItem2 = SurveyItem(id: id, name: "湿度")
-            let sample = Sample(id: SampleIdentifier(id: ObjectIdentifier(Int.self)),
+            let sample = Sample(id: SampleIdentifier(id: 0),
                                 name: "No.1",
-                                measuredResult: [id.id : "loadViewAdding"])
+                                results: [])
             let viewModel = SurveyDetailViewModel(didSelectHandler: nil,
                                                   name: "調査その1",
                                                   dateString: "2020/02/24",

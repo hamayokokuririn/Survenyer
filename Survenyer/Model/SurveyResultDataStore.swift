@@ -12,7 +12,7 @@ import UIKit
 final class SurveyResultDataStore {
     static let shared = SurveyResultDataStore()
     
-    var surveyResult: SurveyResult = SurveyResult(result: [String : SurveySampleResult]())
+    var surveyResult: SurveyResultCodable = SurveyResultCodable(result: [String : SurveySampleResult]())
     
     var fieldNames = ["A", "B", "C", "D", "E", "F", "G", "H"]
     

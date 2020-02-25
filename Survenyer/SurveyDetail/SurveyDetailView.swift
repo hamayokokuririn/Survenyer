@@ -94,7 +94,7 @@ extension SurveyDetailView: UITableViewDataSource {
         }
         cell?.accessoryType = .disclosureIndicator
         cell?.textLabel?.text = sample.name
-        cell?.detailTextLabel?.text = sample.measuredResult.first!.value
+        cell?.detailTextLabel?.text = sample.results.first?.result ?? ""
         cell?.detailTextLabel?.numberOfLines = 2
         cell?.detailTextLabel?.lineBreakMode = .byWordWrapping
         

@@ -9,14 +9,14 @@ import Foundation
 
 struct Survey {
     let id: SurveyIdentifier
-    let name: String
+    var name: String
     let date: Date
-    let surveyItems: [SurveyItem]
-    let samples: [Sample]
+    var surveyItems: [SurveyItem]
+    var samples: [Sample]
 }
 
 struct SurveyIdentifier: Identifiable {
-    let id: ObjectIdentifier
+    let id: Int
 }
 
 struct SurveyItem {
@@ -25,15 +25,20 @@ struct SurveyItem {
 }
 
 struct SurveyItemIdentifier: Identifiable {
-    let id: ObjectIdentifier
+    let id: Int
 }
 
 struct Sample {
     let id: SampleIdentifier
     let name: String
-    let measuredResult: [SurveyItemIdentifier.ID: String]
+    let results: [SurveyResult]
+}
+
+struct SurveyResult {
+    let item: SurveyItem
+    let result: String
 }
 
 struct SampleIdentifier: Identifiable {
-    let id: ObjectIdentifier
+    let id: Int
 }

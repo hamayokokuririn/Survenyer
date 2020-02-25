@@ -10,7 +10,7 @@ import Foundation
 import CSV
 
 struct MakeFileAsCSV {
-    let surveyResult: SurveyResult
+    let surveyResult: SurveyResultCodable
     
     private func makeStringAsCSV() -> String {
         let csv = try! CSVWriter(stream: .toMemory())

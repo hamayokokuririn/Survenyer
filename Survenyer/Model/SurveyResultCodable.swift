@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct SurveyResult: Codable {
+struct SurveyResultCodable: Codable {
     var result: [String: SurveySampleResult]
     
     mutating func append(sample: [String: SurveySampleResult]) {
