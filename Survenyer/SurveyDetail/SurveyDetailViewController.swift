@@ -12,23 +12,25 @@ final class SurveyDetailViewController: UIViewController {
     var mainView: SurveyDetailView?
     var viewModel: SurveyDetailViewModel?
     
-    private var didSelectHandler: VoidClosure {
-        return {
-            guard let sample = self.viewModel?.sampleList.first else {
-                return
-            }
-            let vc = SampleInputViewController(sample: sample)
-            self.navigationController?.pushViewController(vc, animated: true)
-        }
-    }
-    
     init(viewModel: SurveyDetailViewModel) {
         super.init(nibName: nil, bundle: nil)
-        let newViewModel = SurveyDetailViewModel(didSelectHandler: self.didSelectHandler,
-                                                 name: viewModel.name,
+        let didSelectHandler = {(sample: Sample) -> Void in
+            let dataStore = SurveyResultDataStore.shared
+            guard let dsSample = dataStore.sampleList.first(where: { (dsSample) -> Bool in
+                dsSample.id.id == sample.id.id
+            }) else {
+                print("該当するサンプルの情報がありませんでした")
+                return
+            }
+            let vc = SampleInputViewController(sample: dsSample)
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        
+        let newViewModel = SurveyDetailViewModel(name: viewModel.name,
                                                  dateString: viewModel.dateString,
                                                  surveyItemList: viewModel.surveyItemList,
                                                  sampleList: viewModel.sampleList)
+        newViewModel.didSelectHandler = didSelectHandler
         self.viewModel = newViewModel
     }
     

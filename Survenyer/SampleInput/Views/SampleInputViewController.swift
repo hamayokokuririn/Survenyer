@@ -46,7 +46,16 @@ final class SampleInputViewController: UIViewController {
             self.updateTextFieldBackgroundColor(index: 0)
         }
         
-        inputTextFiledList = InputTextFieldList(surveyResults: sample.results)
+        let didUpdateTextHandler = { (result: SurveyResult) in
+            self.sample.updateResults(result)
+            self.dataStore.updateSample(sample: self.sample)
+            print(result.item.name)
+            print(result.result)
+        }
+        
+        inputTextFiledList = InputTextFieldList(surveyResults: sample.results,
+                                                handlerShouldBeginEditing: handlerShouldBeginEditing,
+                                                didUpdateTextHandler: didUpdateTextHandler)
         inputTextFiledList?.list.forEach {
             self.contentScrollView?.addSubview($0)
         }

@@ -31,7 +31,16 @@ struct SurveyItemIdentifier: Identifiable {
 struct Sample {
     let id: SampleIdentifier
     let name: String
-    let results: [SurveyResult]
+    var results: [SurveyResult]
+    
+    mutating func updateResults(_ result: SurveyResult) {
+        guard let index = results.firstIndex(where: {
+            $0.item.id.id == result.item.id.id
+        }) else {
+            return
+        }
+        results[index] = result
+    }
 }
 
 struct SurveyResult {

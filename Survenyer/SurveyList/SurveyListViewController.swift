@@ -16,14 +16,21 @@ final class SurveyListViewController: UIViewController {
             let id = SurveyItemIdentifier(id: 0)
             let surveyItem = SurveyItem(id: id, name: "温度")
             let surveyItem2 = SurveyItem(id: id, name: "湿度")
+            let result1 = SurveyResult(item: surveyItem, result: "")
+            let result2 = SurveyResult(item: surveyItem2, result: "")
             let sample = Sample(id: SampleIdentifier(id: 0),
                                 name: "No.1",
-                                results: [])
-            let viewModel = SurveyDetailViewModel(didSelectHandler: nil,
-                                                  name: "調査その1",
+                                results: [result1, result2])
+            let sample2 = Sample(id: SampleIdentifier(id: 1),
+                                name: "No.2",
+                                results: [result1, result2])
+            let samples = [sample, sample2]
+            let dataStore = SurveyResultDataStore.shared
+            dataStore.sampleList = samples
+            let viewModel = SurveyDetailViewModel(name: "調査その1",
                                                   dateString: "2020/02/24",
                                                   surveyItemList: [surveyItem, surveyItem2],
-                                                  sampleList: [sample, sample, sample, sample, sample, sample, sample, sample, sample, sample])
+                                                  sampleList: samples)
             let vc = SurveyDetailViewController(viewModel: viewModel)
             self.navigationController?.pushViewController(vc, animated: true)
         }

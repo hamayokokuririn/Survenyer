@@ -18,12 +18,12 @@ final class SurveyDetailView: UIView {
             dateLabel.text = viewModel.dateString
             surveyItemView.setItemList(item: viewModel.surveyItemListString)
             
+            sampleTable.dataSource = viewModel
+            sampleTable.delegate = viewModel
             setNeedsLayout()
             layoutIfNeeded()
         }
     }
-    
-    private let cellID = "ID"
     
     private let contentScrollView = UIScrollView()
     
@@ -40,8 +40,6 @@ final class SurveyDetailView: UIView {
         contentScrollView.addSubview(surveyItemView)
         
         sampleTable.isScrollEnabled = false
-        sampleTable.dataSource = self
-        sampleTable.delegate = self
         contentScrollView.addSubview(sampleTable)
         contentScrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 44, right: 0)
     }
@@ -72,44 +70,4 @@ final class SurveyDetailView: UIView {
     }
 }
 
-extension SurveyDetailView: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let count = viewModel?.sampleList.count else {
-            return 0
-        }
-        return count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let sampleList = viewModel?.sampleList,
-            sampleList.indices.contains(indexPath.row) else {
-            return UITableViewCell()
-        }
-            
-        let sample = sampleList[indexPath.row]
-        var cell = tableView.dequeueReusableCell(withIdentifier: cellID)
-        if cell == nil {
-            cell = UITableViewCell(style: .subtitle,
-                                   reuseIdentifier: cellID)
-        }
-        cell?.accessoryType = .disclosureIndicator
-        cell?.textLabel?.text = sample.name
-        cell?.detailTextLabel?.text = sample.results.first?.result ?? ""
-        cell?.detailTextLabel?.numberOfLines = 2
-        cell?.detailTextLabel?.lineBreakMode = .byWordWrapping
-        
-        return cell!
-    }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        "サンプル"
-    }
-    
-}
 
-extension SurveyDetailView: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        viewModel?.didSelectHandler?()
-    }
-}

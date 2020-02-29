@@ -12,10 +12,15 @@ final class InputTextFieldList {
     var list = [SampleInputTextField]()
     var focusedInputTextField: SampleInputTextField?
     
-    init(surveyResults: [SurveyResult]) {
+    init(surveyResults: [SurveyResult],
+         handlerShouldBeginEditing: @escaping VoidClosure,
+         didUpdateTextHandler: @escaping (SurveyResult) -> Void) {
         self.list = surveyResults.map {
             let viewModel = SurveyInputTextFiledViewModel(surveyItem: $0.item)
+            viewModel.handlerShouldBeginEditing = handlerShouldBeginEditing
+            viewModel.didUpdateTextHandler = didUpdateTextHandler
             let input = SampleInputTextField(viewModel: viewModel)
+            input.updateText($0.result)
             return input
         }
     }
